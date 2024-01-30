@@ -6,8 +6,7 @@
 % frequency response.
 %
 % Properties (Access = protected):
-%   - circular_buffer: Circular buffer to store input samples
-%   - idx_buffer: Index to track the current position in the circular buffer
+%   - buffer: buffer to store input samples
 %   - fir_coef: Coefficients of the FIR filter
 %
 % Methods (Access = public):
@@ -22,8 +21,7 @@
 %
 classdef FIRFilter < BaseFilter
     properties (Access = protected)
-        circular_buffer % Circular buffer to store input samples
-        idx_buffer % Index to track the current position in the circular buffer
+        buffer % buffer to store input samples
         fir_coef % Coefficients of the FIR filter
     end
     
@@ -37,22 +35,18 @@ classdef FIRFilter < BaseFilter
             obj@BaseFilter(Tc);
             
             % Initialize the state variable and coefficients
-            obj.circular_buffer = zeros(length(fir_coef),1);
-            obj.fir_coef=fir_coef;
+            obj.buffer = zeros(length(fir_coef),1);
             if isrow(fir_coef)
                 obj.fir_coef=fir_coef';
             else
                 obj.fir_coef=fir_coef;
             end
-            obj.idx_buffer=1;
-            
         end
 
         % Method to initialize the state variable
         function obj = initialize(obj)
-            % Reset the circular buffer and index
-            obj.circular_buffer = zeros(length(obj.fir_coef),1);
-            obj.idx_buffer=1;
+            % Reset the buffer
+            obj.buffer = zeros(length(obj.fir_coef),1);
         end
 
         % Method to set starting conditions based on the input
@@ -60,9 +54,8 @@ classdef FIRFilter < BaseFilter
             % Validate input
             assert(isscalar(input), 'Input must be a scalar');
             
-            % Initialize the circular buffer with the input value
-            obj.circular_buffer = ones(length(obj.fir_coef),1) * input;
-            obj.idx_buffer=1;
+            % Initialize the buffer with the input value
+            obj.buffer = ones(length(obj.fir_coef),1) * input;
         end
 
         % Method to perform one step of the FIR filter and compute the output
@@ -70,25 +63,11 @@ classdef FIRFilter < BaseFilter
             % Validate input
             assert(isscalar(input), 'Input must be a scalar');
 
-            % Update the circular buffer with the latest input
-            obj.circular_buffer(obj.idx_buffer) = input;
+            % Update the buffer with the latest input
+            obj.buffer = [input;obj.buffer(1:end-1)];
 
             % Compute the output using the FIR filter equation
-            output = 0;
-            for idx=0:length(obj.circular_buffer)-1
-                ib = obj.idx_buffer + idx;
-                if ib > length(obj.circular_buffer)
-                    ib = ib - length(obj.circular_buffer);
-                end
-                output = output + obj.fir_coef(idx+1) * obj.circular_buffer(ib);
-            end
-
-            % Update the circular buffer index
-            if obj.idx_buffer < length(obj.circular_buffer)
-                obj.idx_buffer = obj.idx_buffer + 1;
-            else
-                obj.idx_buffer = 1;
-            end
+            output = obj.buffer.'*obj.fir_coef;
             
         end
     end

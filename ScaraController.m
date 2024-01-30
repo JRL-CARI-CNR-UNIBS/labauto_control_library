@@ -27,6 +27,7 @@ classdef ScaraController < BaseController
         joint1_ctrl % Inner controller for the first joint
         joint2_ctrl % Inner controller for the second joint 
         inverse_dynamics_fcn % Inverse dynamics function
+        payload
     end
     
     methods
@@ -43,6 +44,8 @@ classdef ScaraController < BaseController
             obj.joint1_ctrl = joint1_ctrl;
             obj.joint2_ctrl = joint2_ctrl;
             obj.inverse_dynamics_fcn = inverse_dynamics_fcn;
+
+            obj.payload = 0;
         end
 
         % Method to initialize the inner and outer loop controllers
@@ -69,10 +72,11 @@ classdef ScaraController < BaseController
             DDqref=reference([5 6]);
 
             % compute torque using dynamic model
-            precomputed_torque=@obj.inverse_dynamics_fcn(...
-                q(1),qref(2),...
+            precomputed_torque=obj.inverse_dynamics_fcn(...
+                qref(1),qref(2),...
                 Dqref(1),Dqref(2),...
-                DDqref(1),DDqref(2));
+                DDqref(1),DDqref(2), ...
+                obj.payload)';
 
             uff=uff+precomputed_torque;
 
@@ -98,15 +102,16 @@ classdef ScaraController < BaseController
             DDqref=reference([5 6]);
 
             % compute torque using dynamic model
-            precomputed_torque=@obj.inverse_dynamics_fcn(...
-                q(1),qref(2),...
+            precomputed_torque=obj.inverse_dynamics_fcn(...
+                qref(1),qref(2),...
                 Dqref(1),Dqref(2),...
-                DDqref(1),DDqref(2));
+                DDqref(1),DDqref(2), ...
+                obj.payload)';
 
             uff=uff+precomputed_torque;
 
-            u(1)=obj.joint1_ctrl.computeControlAction(reference_joint1, y_joint1, uff(1));
-            u(2)=obj.joint2_ctrl.computeControlAction(reference_joint2, y_joint2, uff(2));
+            u(1,1)=obj.joint1_ctrl.computeControlAction(reference_joint1, y_joint1, uff(1));
+            u(2,1)=obj.joint2_ctrl.computeControlAction(reference_joint2, y_joint2, uff(2));
         end
     end
 end
