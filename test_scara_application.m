@@ -178,21 +178,7 @@ for  iprogram=1:length(programs)
         legend({'Torque'})
 
 
-        %%
-        figure
-
-        for idx=1:length(t)
-            [cart_pos,cart_vel]=ikm.fk(joint_position(idx,:)',joint_velocity(idx,:)');
-            cartesian_position(idx,:)=cart_pos; % cartesian position from encoder measure
-            cartesian_velocity(idx,:)=cart_vel; % cartesian velocity from encoder measure
-        end
-        plot(cartesian_position(:,1),cartesian_position(:,2))
-        hold on
-        plot(target_cartesian(:,1),target_cartesian(:,2))
-        grid on
-        axis equal
-        legend('Cartesian position from encoder','Desired')
-
+        title(program_name)
         drawnow
 
         itest=(iprogram-1)*ntrials+itrial;
@@ -205,3 +191,8 @@ for  iprogram=1:length(programs)
         
     end
 end
+
+evaluator=scara_data.Evaluator(Tc,@scara.fkSimulation,@scara_ctrl.fkFcn);
+score=evaluator.evaluate(test_data);
+fprintf('Score = %f\n',score);
+
