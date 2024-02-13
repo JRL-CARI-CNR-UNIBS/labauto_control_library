@@ -36,7 +36,10 @@ classdef (Abstract) BaseController < handle
         function setUMax(obj, umax)
             obj.umax = umax;
         end
-
+        % Method to set the maximum control action
+        function umax=getUMax(obj)
+            umax=obj.umax;
+        end
         % Method to get the sampling period
         function st = getSamplingPeriod(obj)
             st = obj.Tc;

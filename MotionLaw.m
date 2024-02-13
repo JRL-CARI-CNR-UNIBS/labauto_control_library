@@ -103,7 +103,7 @@ classdef (Abstract) MotionLaw < handle
         function obj=setInitialCondition(obj,y0)
             obj.y0=y0;
             obj.target_y=y0;
-            obj.initialize()
+            obj.initialize();
         end
 
         % Initialize method to set initial values
@@ -144,7 +144,7 @@ classdef (Abstract) MotionLaw < handle
                 y=measure;
             end
             % Check if the current position is within tolerance of the target position
-            if min(abs(obj.target_y - y))<obj.tolerance
+            if max(abs(obj.target_y - y))<obj.tolerance
                 % If in tolerance, go to the next instruction
                 obj.decodeInstruction();
             end

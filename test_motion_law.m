@@ -1,4 +1,4 @@
-% TrapezoidalMotionLawExample - Example script demonstrating the use of TrapezoidalMotionLaw
+% test_motion_law - Example script demonstrating the use of TrapezoidalMotionLaw
 %
 % This script creates an instance of the TrapezoidalMotionLaw class and
 % defines a sequence of motion instructions, including movements and pauses.
@@ -25,7 +25,7 @@ max_Dy = [10; 4];
 max_DDy = 30 * ones(2, 1);
 
 q0=[0;0];
-T=fkineRigid(q0(1),q0(2));
+T=scara_ctrl.fkFcn(q0);
 y0=T([1 3],4);
 
 
@@ -63,7 +63,7 @@ plot(DDy)
 title('Accelerations (DDy)')
 
 
-ikm=IkMotion(Tc,q0,@jacobRigid,@jacobDotRigid,@ikineRigid);
+ikm=IkMotion(Tc,q0,@scara_ctrl.jacobFcn,@scara_ctrl.jacobDotFcn,@scara_ctrl.ikFcn,@scara_ctrl.fkFcn);
 try
     for idx=1:size(y,1)
         [q(idx,:),Dq(idx,:),DDq(idx,:)]=ikm.ik(y(idx,:)',Dy(idx,:)',DDy(idx,:)');

@@ -40,6 +40,7 @@ classdef CascadeController < BaseController
             % Initialize properties with input parameters
             obj.InnerCtrl = InnerCtrl;
             obj.OuterCtrl = OuterCtrl;
+            obj.setUMax(InnerCtrl.getUMax());
         end
 
         % Method to initialize the inner and outer loop controllers

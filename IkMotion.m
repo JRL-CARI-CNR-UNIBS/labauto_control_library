@@ -1,14 +1,16 @@
 % IkMotion - Class for implementing inverse kinematics (IK) motion control
 %
-% This class provides a framework for inverse kinematics motion control.
+% This class provides a framework for inverse and direct kinematics motion control.
 % It is designed to determine joint positions, velocities, and
-% accelerations based on Cartesian positions, velocities, and accelerations.
+% accelerations based on Cartesian positions, velocities, and accelerations
+% and viceversa.
 %
 % Properties:
 %   - Tc: Cycle time (sampling time)
 %   - jacobFcn: Function handle for the Jacobian matrix computation
 %   - jacobDotFcn: Function handle for the time derivative of the Jacobian matrix computation
 %   - ikFcn: Function handle for the inverse kinematics computation
+%   - fkFcn: Function handle for the direct kinematics computation
 %   - q0: Initial joint positions
 %   - last_q: Last joint positions (used for choosing closest IK solution)
 %   - ndof: Number of degrees of freedom
@@ -17,6 +19,7 @@
 %   - IkMotion: Constructor to create IkMotion objects
 %   - initialize: Initialize method to set initial values
 %   - ik: Method to compute joint positions, velocities, and accelerations from Cartesian motion
+%   - fk: Method to compute Cartesian motion from joint positions, velocities, and accelerations 
 %
 % Constructor Input Parameters:
 %   - Tc: Cycle time (scalar numeric)
@@ -24,6 +27,7 @@
 %   - jacobFcn: Function handle for Jacobian matrix computation
 %   - jacobDotFcn: Function handle for time derivative of Jacobian matrix computation
 %   - ikFcn: Function handle for inverse kinematics computation
+%   - fkFcn: Function handle for direct kinematics computation
 %
 classdef IkMotion < handle
     properties
@@ -31,6 +35,7 @@ classdef IkMotion < handle
         jacobFcn; % Function handle for the Jacobian matrix computation
         jacobDotFcn; % Function handle for the time derivative of the Jacobian matrix computation
         ikFcn; % Function handle for the inverse kinematics computation
+        fkFcn; % Function handle for the direct kinematics computation
         q0; % Initial joint positions
         last_q; % Last joint positions (used for choosing closest IK solution)
 
@@ -39,7 +44,7 @@ classdef IkMotion < handle
     methods  (Access = public)
 
         % Constructor for IkMotion class
-        function obj=IkMotion(Tc, q0, jacobFcn, jacobDotFcn, ikFcn)
+        function obj=IkMotion(Tc, q0, jacobFcn, jacobDotFcn, ikFcn, fkFcn)
             
             % Input validation for initial joint positions (q0)
             assert(isvector(q0));
@@ -55,6 +60,7 @@ classdef IkMotion < handle
             obj.jacobFcn = jacobFcn;
             obj.jacobDotFcn = jacobDotFcn;
             obj.ikFcn = ikFcn;
+            obj.fkFcn = fkFcn;
 
             obj.ndof = length(q0);
             obj.q0 = q0;
@@ -120,18 +126,38 @@ classdef IkMotion < handle
             q = iksol;
 
             % Compute Jacobian matrix for the current joint positions
-            jacobian = obj.jacobFcn(obj.last_q(1), obj.last_q(2));
+            jacobian = obj.jacobFcn(obj.last_q);
             jacobian=jacobian([1 3],:); % use only two dimensions
 
             % Compute joint velocities using the Jacobian inverse
             Dq = jacobian \ Dcart;
 
             % Compute time derivative of Jacobian matrix
-            jacobianDot = obj.jacobDotFcn(obj.last_q(1), obj.last_q(2), Dq(1), Dq(2));
+            jacobianDot = obj.jacobDotFcn(obj.last_q, Dq);
 
 
             % Compute joint accelerations using the Jacobian inverse
             DDq = jacobian \ (DDcart-jacobianDot([1 3]));
+        end
+
+        % Method to compute Cartesian motion from joint positions, velocities, and accelerations
+        function [cart, Dcart, DDcart]=fk(obj, q, Dq, DDq)
+            T=obj.fkFcn(q);
+            cart=T([1 3],4);
+
+            if nargin>2
+                jacobian = obj.jacobFcn(q);
+                twist=jacobian*Dq;
+                % twist = [ linear velocity; angular velocity]
+                Dcart=twist([1 3]);
+            end
+
+            if nargin>3
+                jacobianDot = obj.jacobDotFcn(q, Dq);
+                Dtwist = jacobian*DDq+jacobianDot;
+                % Dtwist = [ linear acceleration; angular velocity]
+                DDcart = Dtwist([1 3]);
+            end
         end
 
     end  
