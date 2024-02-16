@@ -25,7 +25,15 @@ This repository contains a collection of MATLAB classes designed to facilitate t
 - **TrapezoidalMotionLaw:** class for computing trapezoidal motion law.
 
 
-## Usage
+## Scripts for testing an application
+- **test_scara_application.m** runs several moving programs and evaluate the execution. For simulation, you need to provide a +package to simulate the system and a +package with the functions to compute kinematics and dynamics regressors functions.
 
 
-
+## Scripts for testing and debugging
+- **test_cascade_controller.m**
+- **test_control_loop.m**
+- **test_filters.m**
+- **test_motion_law.m**
+- **test_open_loop.m**
+- **test_scara.m**
+- **test_scara_application.m**
