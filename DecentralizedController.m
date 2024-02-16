@@ -62,6 +62,15 @@ classdef DecentralizedController < BaseController
             end
         end
 
+        % Method to set the maximum control action
+        function setUMax(obj, umax)
+            assert(isvector(umax) && length(umax) == obj.njoints, 'Control action (u) must be a n-element vector');
+            
+            for idx=1:obj.njoints
+                obj.joint_ctrls(idx).setUMax(umax(idx));
+            end
+        end
+
         % Method to set starting conditions for the inner and outer loops
         function obj = starting(obj, reference, y, u, uff)
             % Validate input parameters

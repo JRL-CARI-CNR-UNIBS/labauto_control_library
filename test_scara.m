@@ -5,16 +5,16 @@ clear all; close all; clc;
 
 
 % create simulator for scara robot
-robot=ElasticRoboticSystem('scara');
+robot=ElasticRoboticSystem('spong2');
 robot.initialize;
 
 % Set the cycle time (sampling time) for motion law updates
 Tc = robot.getSamplingPeriod;
 
 % load the tuned controller
-load +scara_data\scara_controller_object.mat
+load +scara_data/scara_controller_object.mat
 decentralized_ctrl.initialize;
-
+decentralized_ctrl.setUMax(robot.getUMax);
 
 % initial reference is equal to the inital state of the robot
 measured_output = robot.readSensorValue();
@@ -100,6 +100,20 @@ joint_acceleration = zeros(length(joint_velocity),size(joint_position,2));
 % The Savitzky-Golay filter is a smoothing filter that fits a polynomial of
 % a specified order to the data within a sliding window and then evaluates
 % the derivative of that polynomial at the center point of the window.
+%
+% Example: polynomial of order 1
+%
+% y=m*(i*Tc)+q with i=-window:window
+%
+% [1  (-window)  *Tc]       [ y(now-window)   ]
+% [1  (-window+1)*Tc]       [ y(now-(window-1)]
+% [1  (-window+2)*Tc] [q]   [ y(now-(window-2)]
+% [  ........       ] [m] = [ .....           ]
+% [1  (window-1)*Tc ]       [ y(now+(window-1)]       
+% [1  (window)*Tc   ]       [ y(now+window    ]
+
+
+%
 window=2;
 [b,g] = sgolay(1,1+2*window);
 

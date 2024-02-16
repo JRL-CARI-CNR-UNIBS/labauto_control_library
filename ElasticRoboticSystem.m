@@ -40,8 +40,8 @@ classdef ElasticRoboticSystem < MechanicalSystem
             obj.sigma_y=[noise(1)*ones(obj.n_controlled_joints,1); noise(2)*ones(obj.n_controlled_joints,1)];
             
             % initial inital control action to stay close to steady state.
-            tau_nonlinear=obj.inverseDynamicsNonLinearFcn(obj.x0(1:obj.njoints),obj.x0((1:obj.njoints)+obj.njoints),0);
-            obj.u=tau_nonlinear(1:2:end)+tau_nonlinear(2:2:end);
+            obj.u=eval(sprintf('%s.initialTauSimulation',model_name));
+            
         
 
             for idx=1:obj.n_controlled_joints

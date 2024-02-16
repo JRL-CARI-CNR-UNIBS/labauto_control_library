@@ -16,7 +16,7 @@ classdef Evaluator < handle
             obj.fkRigid=fkRigid;
 
             valueSet=[5.8 5.20 8.1];
-            keySet = {'+scara_data\decagon.code' '+scara_data\diamond.code' '+scara_data\square.code'};
+            keySet = {'+scara_data/decagon.code' '+scara_data/diamond.code' '+scara_data/square.code'};
             obj.expected_total_time = containers.Map(keySet,valueSet);
 
         end

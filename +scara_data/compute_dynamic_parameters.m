@@ -2,7 +2,7 @@ clear all;close all;clc
 
 % compute dynamic parameters
 
-load +scara_data\test_movement.mat
+load +scara_data/test_movement.mat
 
 ndata=length(test_data.time);
 
@@ -71,4 +71,4 @@ plot(test_data.time,test_data.joint_torque(:,2))
 hold on
 plot(test_data.time,tau_model(:,2),'--')
 
-save +scara_data\dynamic_paramers dynamic_parameters
+save +scara_data/dynamic_paramers dynamic_parameters

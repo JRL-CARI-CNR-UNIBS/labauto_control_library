@@ -8,16 +8,17 @@ max_Dcart = [2; 2];
 max_DDcart = 3 * ones(2, 1);
 
 % load the tuned controller
-load +scara_data\scara_controller_object.mat
-
+load +scara_data/scara_controller_object.mat
+decentralized_ctrl.initialize;
+decentralized_ctrl.setUMax(robot.getUMax);
 
 % Set the cycle time (sampling time) for motion law updates
-robot=ElasticRoboticSystem('scara');
+robot=ElasticRoboticSystem('spong2');
 Tc = robot.getSamplingPeriod;
 
 ntrials=3; % for each program run ntrials
 
-programs=["+scara_data\square.code","+scara_data\diamond.code","+scara_data\decagon.code"];
+programs=["+scara_data/square.code","+scara_data/diamond.code","+scara_data/decagon.code"];
 for  iprogram=1:length(programs)
     program_name=programs(iprogram);
 
@@ -33,7 +34,7 @@ for  iprogram=1:length(programs)
         % initial reference is equal to the inital state of the robot
         initial_reference=[q0;Dq0;DDq0];
 
-        T_base_tool=scara_ctrl.fkFcn(q0);
+        T_base_tool=spong2_ctrl.fkFcn(q0);
 
         initia_cartesian_reference=T_base_tool([1 3],4);
 
@@ -46,7 +47,7 @@ for  iprogram=1:length(programs)
         ml.addInstructions(instructions);
 
         % define direct and inverse kinematics solver
-        ikm=IkMotion(Tc,q0,@scara_ctrl.jacobFcn,@scara_ctrl.jacobDotFcn,@scara_ctrl.ikFcn,@scara_ctrl.fkFcn);
+        ikm=IkMotion(Tc,q0,@spong2_ctrl.jacobFcn,@spong2_ctrl.jacobDotFcn,@spong2_ctrl.ikFcn,@spong2_ctrl.fkFcn);
 
         % read the initial torque
         joint_torque=robot.readActuatorValue;
@@ -192,7 +193,7 @@ for  iprogram=1:length(programs)
     end
 end
 
-evaluator=scara_data.Evaluator(Tc,@scara.fkSimulation,@scara_ctrl.fkFcn);
+evaluator=scara_data.Evaluator(Tc,@spong2.fkSimulation,@spong2_ctrl.fkFcn);
 score=evaluator.evaluate(test_data);
 fprintf('Score = %f\n',score);
 

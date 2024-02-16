@@ -49,6 +49,11 @@ classdef CascadeController < BaseController
             obj.InnerCtrl.initialize();
         end
 
+        % Method to set the maximum control action
+        function setUMax(obj, umax)
+            obj.InnerCtrl.setUMax(umax);
+        end
+
         % Method to set starting conditions for the inner and outer loops
         function obj = starting(obj, reference, y, u, uff)
             % Validate input parameters

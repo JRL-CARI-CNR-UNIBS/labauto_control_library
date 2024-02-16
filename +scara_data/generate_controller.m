@@ -51,8 +51,8 @@ cascade_ctrl2 = CascadeController(Tc, inner_ctrl2, outer_ctrl2);
 
 USE_DYNPAR=1;
 if USE_DYNPAR
-    load +scara_data\dynamic_paramers
-    idyn=@(q,Dq,DDq)[scara_ctrl.regressorFcn(q,Dq,DDq) diag(Dq) Dq]*dynamic_parameters;
+    load +scara_data/dynamic_paramers
+    idyn=@(q,Dq,DDq)[spong2_ctrl.regressorFcn(q,Dq,DDq) diag(Dq) Dq]*dynamic_parameters;
     decentralized_ctrl = DecentralizedController(Tc,[cascade_ctrl1,cascade_ctrl2],idyn);
 else
     decentralized_ctrl = DecentralizedController(Tc,[cascade_ctrl1,cascade_ctrl2]);

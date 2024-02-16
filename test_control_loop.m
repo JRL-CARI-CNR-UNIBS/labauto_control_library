@@ -4,9 +4,9 @@ clear all; close all; clc;
 
 % load the tuned controller
 
-%addpath("single_joint_ctrl")
+robot=ElasticRoboticSystem('spong1');
+robot.initialize;
 
-robot=ElasticRoboticSystem('single_joint');
 robot.show;
 % Set the cycle time (sampling time) for motion law updates
 Tc = robot.getSamplingPeriod;
@@ -32,7 +32,7 @@ outer_ctrl = PIDController(Tc, Kpp, Kip, Kdp, [], [], []);
 cascade_ctrl = CascadeController(Tc, inner_ctrl, outer_ctrl);
 
 cascade_ctrl.initialize;
-robot.initialize;
+cascade_ctrl.setUMax(robot.getUMax);
 measured_output = robot.readSensorValue();
 q0=measured_output(1);
 Dq0=measured_output(2);
