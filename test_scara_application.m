@@ -7,14 +7,15 @@ clear all; close all; clc;
 max_Dcart = [2; 2];
 max_DDcart = 3 * ones(2, 1);
 
+% Set the cycle time (sampling time) for motion law updates
+robot=ElasticRoboticSystem('spong2');
+Tc = robot.getSamplingPeriod;
+
 % load the tuned controller
 load +scara_data/scara_controller_object.mat
 decentralized_ctrl.initialize;
 decentralized_ctrl.setUMax(robot.getUMax);
 
-% Set the cycle time (sampling time) for motion law updates
-robot=ElasticRoboticSystem('spong2');
-Tc = robot.getSamplingPeriod;
 
 ntrials=3; % for each program run ntrials
 
@@ -103,9 +104,16 @@ for  iprogram=1:length(programs)
 
         % acceleration is computed Savitzky-Golay filter 
         joint_acceleration = zeros(length(joint_velocity),size(joint_position,2));
-        [b,g] = sgolay(1,5);
+        window=2;
+        [b,g] = sgolay(1,1+2*window);
+
+        g_filter=g(:,1)'; % moving average
+        g_filter_der=g(:,2)'/Tc; % first derivative
+
         for iax = 1:size(joint_position,2)
-            joint_acceleration(:,iax) = conv(joint_velocity(:,iax), -1/Tc * g(:,2), 'same');
+            for idx = (1+window):(size(joint_position,1)-window)
+                joint_acceleration(idx,iax) = g_filter_der*joint_velocity((idx-window):(idx+window),iax);
+            end
         end
 
         reference_position=reference_signal(:,[1 2]);
