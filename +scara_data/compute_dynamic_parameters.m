@@ -46,7 +46,7 @@ for idx=1:ndata
     Dq=joint_velocity_filt(idx,:)';
     DDq=joint_acceleration_filt(idx,:)';
     tau=joint_torque(idx,:)';
-    dynamic_regressor=scara_ctrl.regressorFcn(q,Dq,DDq);
+    dynamic_regressor=spong2_ctrl.regressorFcn(q,Dq,DDq);
     friction_regressor=[diag(sign(Dq)) Dq];
     FullRegressor=[FullRegressor;
                    dynamic_regressor friction_regressor];
