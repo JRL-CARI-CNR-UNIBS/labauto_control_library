@@ -51,6 +51,7 @@ classdef CascadeController < BaseController
 
         % Method to set the maximum control action
         function setUMax(obj, umax)
+            obj.umax=umax;
             obj.InnerCtrl.setUMax(umax);
         end
 

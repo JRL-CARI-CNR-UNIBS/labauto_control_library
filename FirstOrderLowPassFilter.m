@@ -31,7 +31,7 @@ classdef FirstOrderLowPassFilter < BaseFilter
         % Constructor for FirstOrderLowPassFilter class
         function obj = FirstOrderLowPassFilter(Tc, time_constant)
             % Validate input parameters
-            assert(isscalar(time_constant) && time_constant >= 0, 'time_constant must be a non-negative scalar');
+            assert(isscalar(time_constant) && time_constant > 0, 'time_constant must be a non-negative scalar');
             
             % Call the constructor of the superclass (BaseFilter)
             obj@BaseFilter(Tc);

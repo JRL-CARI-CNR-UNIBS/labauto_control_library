@@ -16,7 +16,6 @@
 % Abstract Methods (Access = public):
 %   - initialize: Abstract method to (re)initialize the controller
 %   - starting: Abstract method to start the controller with bumpless transition
-%   - stopping: Abstract method to stop the controller (if needed)
 %   - computeControlAction: Abstract method to compute the control action
 %
 classdef (Abstract) BaseController < handle

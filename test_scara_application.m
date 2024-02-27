@@ -37,11 +37,11 @@ for  iprogram=1:length(programs)
 
         T_base_tool=spong2_ctrl.fkFcn(q0);
 
-        initia_cartesian_reference=T_base_tool([1 3],4);
+        initial_cartesian_reference=T_base_tool([1 3],4);
 
         % define the Motion law
         ml = TrapezoidalMotionLaw(max_Dcart, max_DDcart, Tc);
-        ml.setInitialCondition(initia_cartesian_reference);
+        ml.setInitialCondition(initial_cartesian_reference);
 
         % Define a sequence of motion instructions
         instructions=readlines(program_name);

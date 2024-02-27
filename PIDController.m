@@ -132,7 +132,9 @@ classdef PIDController < BaseController
             
             % Apply filters to the measurement signal if available
             if ~isempty(obj.filters_on_measure)
-                filter_measure = obj.filters_on_measure.step(y);
+                for idx = 1:length(obj.filters_on_error_signal)
+                    filter_measure = obj.filters_on_measure(idx).step(y);
+                end
             else
                 filter_measure = y;
             end
