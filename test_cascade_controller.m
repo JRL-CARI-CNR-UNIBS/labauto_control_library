@@ -1,4 +1,4 @@
-% Clear workspace, close figures, and clear command window
+    % Clear workspace, close figures, and clear command window
 clear all;
 close all;
 clc;

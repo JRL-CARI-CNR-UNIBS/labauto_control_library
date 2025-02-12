@@ -175,7 +175,8 @@ classdef PIDController < BaseController
                 end
             else
                 % Integrate the error signal
-                obj.integral_value = obj.integral_value + obj.integral_gain * obj.Tc * error_signal;
+                obj.integral_value = obj.integral_value + obj.integral_gain * obj.Tc * 0.5*error_signal;
+                %obj.integral_value = obj.integral_value + obj.integral_gain * obj.Tc * 0.5*(error_signal+obj.previous_error);
             end
         end
     end

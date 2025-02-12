@@ -62,7 +62,7 @@ subplot(3, 1, 3)
 plot(DDy)
 title('Accelerations (DDy)')
 
-
+return
 ikm=IkMotion(Tc,q0,@spong2_ctrl.jacobFcn,@spong2_ctrl.jacobDotFcn,@spong2_ctrl.ikFcn,@spong2_ctrl.fkFcn);
 try
     for idx=1:size(y,1)

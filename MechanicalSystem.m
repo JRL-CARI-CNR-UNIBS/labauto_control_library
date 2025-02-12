@@ -7,6 +7,7 @@ classdef MechanicalSystem < handle
         t=0; % time
         umax=5; % maximum input
         u
+        u0
 
         order=2; % system order
         num_output=1; % number of system outputs
@@ -28,6 +29,7 @@ classdef MechanicalSystem < handle
             obj.order=2;
             obj.num_input=1;
             obj.num_output=1;
+            obj.u0=zeros(obj.num_input,1);
 
             for idx=1:obj.num_output
                 obj.output_names{idx}=sprintf('output_%d',idx);
@@ -40,6 +42,7 @@ classdef MechanicalSystem < handle
         % (re)initialize the system to initial conditions
         function obj=initialize(obj)
             obj.x=obj.x0;
+            obj.u=obj.u0;
             obj.t=0;
         end
 
