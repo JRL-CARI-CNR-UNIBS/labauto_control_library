@@ -1,6 +1,6 @@
 ## Overview
 
-This repository contains a collection of MATLAB classes designed to facilitate the development and implementation of control systems for mechatronic applications.
+This repository contains a collection of Python classes designed to facilitate the development and implementation of control systems for mechatronic applications.
 
 ## Table of Contents
 - [Overview](#overview)
