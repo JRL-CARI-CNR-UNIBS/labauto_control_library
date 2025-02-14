@@ -55,7 +55,7 @@ Each robot folder (e.g., `Scara0/`) should contain these three files.
 
 ## Simulation
 - **mechanical_system.py** - Abstract class for simulating mechanical systems.
-- **pinocchio_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads URDF and config from a folder. [slide 35 of this lecture](http://www.diag.uniroma1.it/deluca/EECI-IGSC-2023-M16_Lecture_Flexible_Joints_ADL.pdf)
+- **pinocchio_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads URDF and config from a folder. [slide 15 of this lecture](http://www.diag.uniroma1.it/deluca/EECI-IGSC-2023-M16_Lecture_Flexible_Joints_ADL.pdf)
 
 ## Python Scripts
 - **robot_simulation.py** - Run a simulation of the robot performing a list of instructions.
