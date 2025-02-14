@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<robot name="scara_robot">
+    <!-- Base Link -->
+    <link name="base_link"/>
+    <link name="rot_link"/>
+    <link name="flange"/>
+    <joint name="joint_fixed" type="fixed">
+        <parent link="base_link"/>
+        <child link="rot_link"/>
+        <origin xyz="0.0 0 0" rpy="0 1.570796326794897 0"/>
+        <axis xyz="0 0 0"/>
+        <limit effort="10.0" velocity="1.0" lower="-3.14" upper="3.14"/>
+    </joint>
+
+    <!-- Link 1 -->
+    <link name="link1">
+        <visual>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/> 
+            
+            <geometry>
+                <cylinder radius="0.05" length="0.4"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <inertial>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/>  <!-- Center of Mass -->
+            <mass value="2.0"/>  <!-- Mass in kg -->
+            <inertia ixx="0.8" ixy="0.0" ixz="0.0"
+                     iyy="0.8" iyz="0.0"
+                     izz="0.8"/>  <!-- Approximate Cylinder Inertia -->
+        </inertial>
+    </link>
+
+    <!-- Link 2 -->
+    <link name="link2">
+        <visual>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/> 
+            
+            <geometry>
+                <cylinder radius="0.05" length="0.4"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0.0 1.0 0.0 1.0"/>
+            </material>
+        </visual>
+        <inertial>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/>  <!-- Center of Mass -->
+            <mass value="1.5"/>  <!-- Mass in kg -->
+            <inertia ixx="0.8" ixy="0.0" ixz="0.0"
+                     iyy="0.6" iyz="0.0"
+                     izz="0.6"/>  <!-- Approximate Cylinder Inertia -->
+        </inertial>
+    </link>
+
+
+    <!-- Joints -->
+    <!-- Revolute Joint 1 -->
+    <joint name="joint1" type="revolute">
+        <parent link="rot_link"/>
+        <child link="link1"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="10.0" velocity="1.0" lower="-3.14" upper="3.14"/>
+    </joint>
+
+    <!-- Revolute Joint 2 -->
+    <joint name="joint2" type="revolute">
+        <parent link="link1"/>
+        <child link="link2"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="10.0" velocity="1.0" lower="-3.14" upper="3.14"/>
+    </joint>
+
+    <joint name="joint_flange" type="fixed">
+        <parent link="link2"/>
+        <child link="flange"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
+    </joint>
+</robot>
