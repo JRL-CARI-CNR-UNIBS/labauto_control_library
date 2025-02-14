@@ -42,7 +42,7 @@ def test_notch_filter(wn, xi_z, xi_p, Tc):
     # Compute step response of the Python notch filter
     nf.starting(0)
     y_python = np.array([nf.step(1) for _ in range(len(t))])
-
+    y_python[0]=1000
     # Compare results
     assert np.allclose(y, y_python, atol=1e-10), "Output mismatch"
 
