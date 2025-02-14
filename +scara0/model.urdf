@@ -3,6 +3,7 @@
     <!-- Base Link -->
     <link name="base_link"/>
     <link name="rot_link"/>
+    <link name="flange"/>
     <joint name="joint_fixed" type="fixed">
         <parent link="base_link"/>
         <child link="rot_link"/>
@@ -14,18 +15,20 @@
     <!-- Link 1 -->
     <link name="link1">
         <visual>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/> 
+            
             <geometry>
-                <cylinder radius="0.05" length="0.3"/>
+                <cylinder radius="0.05" length="0.4"/>
             </geometry>
             <material name="blue">
                 <color rgba="0.0 0.0 1.0 1.0"/>
             </material>
         </visual>
         <inertial>
-            <origin xyz="0 0 0." rpy="0 0 0"/>  <!-- Center of Mass -->
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/>  <!-- Center of Mass -->
             <mass value="2.0"/>  <!-- Mass in kg -->
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0"
-                     iyy="0.08" iyz="0.0"
+            <inertia ixx="0.8" ixy="0.0" ixz="0.0"
+                     iyy="0.8" iyz="0.0"
                      izz="0.8"/>  <!-- Approximate Cylinder Inertia -->
         </inertial>
     </link>
@@ -33,18 +36,20 @@
     <!-- Link 2 -->
     <link name="link2">
         <visual>
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/> 
+            
             <geometry>
-                <cylinder radius="0.05" length="0.3"/>
+                <cylinder radius="0.05" length="0.4"/>
             </geometry>
             <material name="green">
                 <color rgba="0.0 1.0 0.0 1.0"/>
             </material>
         </visual>
         <inertial>
-            <origin xyz="0 0 0." rpy="0 0 0"/>  <!-- Center of Mass -->
+            <origin xyz="0.2 0 0.0" rpy="0 1.570796326794897 0"/>  <!-- Center of Mass -->
             <mass value="1.5"/>  <!-- Mass in kg -->
-            <inertia ixx="0.008" ixy="0.0" ixz="0.0"
-                     iyy="0.06" iyz="0.0"
+            <inertia ixx="0.8" ixy="0.0" ixz="0.0"
+                     iyy="0.6" iyz="0.0"
                      izz="0.6"/>  <!-- Approximate Cylinder Inertia -->
         </inertial>
     </link>
@@ -64,10 +69,14 @@
     <joint name="joint2" type="revolute">
         <parent link="link1"/>
         <child link="link2"/>
-        <origin xyz="0.3 0 0" rpy="0 0 0"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit effort="10.0" velocity="1.0" lower="-3.14" upper="3.14"/>
     </joint>
 
-
+    <joint name="joint_flange" type="fixed">
+        <parent link="link2"/>
+        <child link="flange"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
+    </joint>
 </robot>

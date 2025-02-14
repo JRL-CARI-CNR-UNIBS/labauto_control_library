@@ -14,6 +14,9 @@ class MotionLaw(ABC):
         self.Tc = Tc
         self.ndof = len(max_Dy)
         assert len(max_DDy) == self.ndof, "max_DDy must have the same length as max_Dy"
+
+        self.s = 0.0  #Curvilinear abscissa
+        self.time = 0.0 # time
         
         self.max_Dy = max_Dy
         self.max_DDy = max_DDy
@@ -39,7 +42,7 @@ class MotionLaw(ABC):
         self.target_DDy = np.zeros(self.ndof)
         
         self.instruction_list = []
-        self.depending_instructions = True
+        self._depending_instructions = True
         self.t_rest = 0
     
     def add_instructions(self, instructions):
@@ -51,7 +54,7 @@ class MotionLaw(ABC):
     
     def depending_instructions(self):
         """ Check if there are depending instructions """
-        return self.depending_instructions
+        return self._depending_instructions
     
     def compute_motion_law(self, measure=None):
         """ Compute the motion law based on the current position """
@@ -73,10 +76,10 @@ class MotionLaw(ABC):
             return
         
         if not self.instruction_list:
-            self.depending_instructions = False
+            self._depending_instructions = False
             return
         
-        self.depending_instructions = True
+        self._depending_instructions = True
         cmd = self.instruction_list.pop(0)
         
         if cmd.startswith("move: "):
