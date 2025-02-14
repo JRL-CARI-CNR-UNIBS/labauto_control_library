@@ -11,7 +11,7 @@ class PinocchioRoboticSystem(MechanicalSystem):
         super().__init__(st)  # Call parent constructor
         
         # Load model from URDF file
-        self.model = pin.buildModelFromUrdf(f'+{model_name}/model.urdf')
+        self.model = pin.buildModelFromUrdf(f'{model_name}/model.urdf')
         self.data = self.model.createData()
         
         # Load simulation parameters from YAML file
