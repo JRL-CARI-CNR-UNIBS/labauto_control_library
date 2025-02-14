@@ -1,7 +1,7 @@
 ## Overview
 
 This repository contains a collection of MATLAB classes used for the Laboratorio di Automatica exam at the [_Università degli Studi di Brescia_](https://www.unibs.it/it). The provided tools support the development and implementation of control systems for mechatronic applications. The authors decline any responsibility for usage outside this scope.
-Developed by (CARI JRL)[https://cari.unibs.it/]
+Developed by [CARI JRL]([https://cari.unibs.it/)
 
 ## Build Status
 
