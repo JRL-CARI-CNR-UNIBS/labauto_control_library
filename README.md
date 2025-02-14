@@ -1,6 +1,7 @@
 ## Overview
 
-This repository contains a collection of Python classes designed to facilitate the development and implementation of control systems for mechatronic applications.
+This repository contains a collection of MATLAB classes used for the Laboratorio di Automatica exam at the [_Università degli Studi di Brescia_](www.unibs.it). The provided tools support the development and implementation of control systems for mechatronic applications. The authors decline any responsibility for usage outside this scope.
+Developed by (CARI JRL)[https://cari.unibs.it/]
 
 ## Build Status
 
