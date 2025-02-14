@@ -2,6 +2,11 @@
 
 This repository contains a collection of Python classes designed to facilitate the development and implementation of control systems for mechatronic applications.
 
+## Build Status
+
+![CI Test](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg)
+
+
 ## Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
