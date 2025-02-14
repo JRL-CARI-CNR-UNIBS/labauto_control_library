@@ -4,7 +4,7 @@ This repository contains a collection of Python classes designed to facilitate t
 
 ## Build Status
 
-![CI Test](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg)
+![CI Test](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg?branch=main)
 
 
 ## Table of Contents
