@@ -27,7 +27,7 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 
 - **BaseFilter:** Base class for filter implementations, providing common functionalities.
 - **FirstOrderLowPassFilter:** [Discrete-time first-order low-pass filter for signal conditioning](docs/first_order_low_pass_filter.md).
-- **NotchFilter:** Discrete-time notch filter for mitigating specific frequency components.
+- **NotchFilter:** [Discrete-time notch filter for mitigating specific frequency components](docs/notch_filter.md).
 - **FIRFilter:** Discrete-time Finite Impulse Response (FIR) filter for smoothing signals.
 
 ### Controller Classes

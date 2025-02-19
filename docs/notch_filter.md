@@ -3,6 +3,12 @@
 ## Overview
 The `NotchFilter` class implements a discrete-time notch filter designed to attenuate a specific frequency while allowing others to pass. This is useful for filtering out undesired oscillations in control and signal processing applications.
 
+The continuous transfer function is
+
+$F(s)=\frac{s^2+2\xi_z s \omega_n +\omega_n^2}{s^2+2\xi_z s \omega_n +\omega_n^2}$
+
+discretized with Tustin method using _Tc_ as sample period.
+
 
 
 ## Constructor
@@ -15,10 +21,6 @@ NotchFilter(Tc: float, wn: float, xi_z: float, xi_p: float)
 - `xi_z` (float): Damping ratio of the zero (xi_z<xi_p).
 - `xi_p` (float): Damping ratio of the pole.
 
-Transfer function (discretized with Tustin)
-s^2+2*xi_z*s*wn+wn^2
---------------------
-s^2+2*xi_p*s*wn+wn^2
 ## Methods
 ### `initialize()`
 Resets the filter state.
@@ -50,4 +52,3 @@ print("Filtered Output:", filtered_output)
 
 ## License
 This project is open-source and can be used freely for research and development purposes.
-

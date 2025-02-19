@@ -2,7 +2,12 @@
 
 ## Overview
 The `FirstOrderLowPassFilter` class implements a discrete-time first-order low-pass filter.
-$\frac{1}{T_f s+1}$
+
+The continuous transfer function is
+
+$F(s)=\frac{1}{T_f s+1}$
+
+discretized with ZOH method using _Tc_ as sample period.
 
 
 ## Constructor
