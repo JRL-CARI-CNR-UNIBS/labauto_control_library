@@ -25,3 +25,8 @@ jobs:
         run: pytest test_fir_filter.py
       - name: Run Tests LP
         run: pytest test_low_pass_filter.py
+      - name: Run Delay
+        run: pytest test_delay.py
+
+      - name: Run PID
+        run: pytest test_pid_controller.py

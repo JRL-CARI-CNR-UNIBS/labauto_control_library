@@ -1,8 +1,10 @@
 # DecentralizedController - Multi-Joint Robot Controller
 
 ## Overview
-The `DecentralizedController` class is designed for controlling a multi-joint rigid body robot. 
+The `DecentralizedController` class is designed for controlling a multi-joint rigid body robot.
 
+
+![Decentralized Controller Scheme](decentralized_controller.png)
 
 ## Constructor
 ```python
@@ -67,4 +69,3 @@ print("Control Output:", control_output)
 
 ## License
 This project is open-source and can be used freely for research and development purposes.
-

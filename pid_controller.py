@@ -79,6 +79,7 @@ class PIDController(BaseController):
         else:
             derivative_term = 0
 
+        print(f"i={self._integral_value} u={self._proportional_gain*error_signal} d={derivative_term} ff={uff}")
         control_action = self._integral_value + self._proportional_gain * error_signal + derivative_term + uff
 
         if self._umax is not None:

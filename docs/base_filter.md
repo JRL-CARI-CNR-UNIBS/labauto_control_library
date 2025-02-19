@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `BaseFilter` class is an abstract base class designed for implementing digital filters. It defines a common interface that must be followed by all derived filter classes, ensuring a consistent structure and behavior.
+The `BaseFilter` class is an abstract base class designed for implementing Single-Input-Single-Output digital filters. It defines a common interface that must be followed by all derived filter classes, ensuring a consistent structure and behavior.
 
 
 ## Methods
@@ -20,7 +20,7 @@ Initializes a filter with the given sampling time.
 Derived classes must implement the following methods:
 
 - `initialize()`: Initializes filter variables.
-- `starting(input_value)`: Sets the filter to a steady-state condition.
+- `starting(input_value)`: Sets the filter to a steady-state condition (normally, it assume steady-state conditions).
 - `step(input_value)`: Computes the filter output given an input.
 
 ## Usage
@@ -33,10 +33,10 @@ from base_filter import BaseFilter
 class CustomFilter(BaseFilter):
     def initialize(self):
         pass
-    
+
     def starting(self, input_value):
         pass
-    
+
     def step(self, input_value):
         return input_value  # Example implementation
 ```
@@ -44,4 +44,3 @@ class CustomFilter(BaseFilter):
 ## License
 
 This project is open-source and can be used freely for research and development purposes.
-

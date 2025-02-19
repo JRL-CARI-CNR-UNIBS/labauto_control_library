@@ -3,6 +3,8 @@
 ## Overview
 The `CascadeController` class implements a cascade control structure with inner and outer loops. The outer loop controls position, while the inner loop controls velocity.
 
+![Cascade Controller Scheme](cascade_controller.png)
+
 ## Constructor
 ```python
 CascadeController(Tc: float, inner_ctrl: BaseController, outer_ctrl: BaseController)

@@ -5,7 +5,7 @@ The `NotchFilter` class implements a discrete-time notch filter designed to atte
 
 The continuous transfer function is
 
-$F(s)=\frac{s^2+2\xi_z s \omega_n +\omega_n^2}{s^2+2\xi_z s \omega_n +\omega_n^2}$
+$F(s)=\frac{s^2+2\xi_z s \omega_n +\omega_n^2}{s^2+2\xi_p s \omega_n +\omega_n^2}$
 
 discretized with Tustin method using _Tc_ as sample period.
 

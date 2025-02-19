@@ -25,22 +25,19 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 
 ### Filter Classes
 
-- **BaseFilter:** Base class for filter implementations, providing common functionalities.
+- **BaseFilter:** [Base class for filter implementations, providing common functionalities](docs/base_filter.md).
 - **FirstOrderLowPassFilter:** [Discrete-time first-order low-pass filter for signal conditioning](docs/first_order_low_pass_filter.md).
 - **NotchFilter:** [Discrete-time notch filter for mitigating specific frequency components](docs/notch_filter.md).
-- **FIRFilter:** Discrete-time Finite Impulse Response (FIR) filter for smoothing signals.
+- **FIRFilter:** [Discrete-time Finite Impulse Response (FIR) filter for smoothing signals](docs/fir_filter.md).
+- **Delay:** [Discrete-time fixed delay](docs/delay.md).
 
 ### Controller Classes
 
-- **BaseController:** Abstract class for designing control laws in mechatronic systems.
-- **PIDController:** Proportional-Integral-Derivative controller with customizable gains and filtering options.
-- **CascadeController:** Cascade control structure combining inner and outer controllers for improved performance.
+- **BaseController:** [Abstract class for designing control laws in mechatronic systems](docs/base_controller.md).
+- **PIDController:** [Proportional-Integral-Derivative controller with customizable gains and filtering options](docs/pid_controller.md).
+- **CascadeController:** [Cascade control structure combining inner and outer controllers for improved performance](docs/cascade_controller.md).
+- **DecentralizedController:** [Decentralized control structure with precomputed torque](docs/decentralized_controller.md).
 
-  ![Cascade Controller Scheme](docs/cascade_controller.png)
-
-- **DecentralizedController:** Decentralized control structure with precomputed torque.
-
-  ![Decentralized Controller Scheme](docs/decentralized_controller.png)
 
 
 ### Motion Law
