@@ -19,6 +19,7 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 - [Python Scripts](#python-scripts)
 - [MATLAB Scripts](#matlab-scripts)
 - [Testing & Debugging](#python-scripts-for-testing-and-debugging)
+- [Installation](#installation)
 
 ## Key Features
 
@@ -71,4 +72,34 @@ Each robot folder (e.g., `Scara0/`) should contain these three files.
 
 ## Python Scripts for Testing and Debugging
 - **test_notch_filter.py** - Run tests on the notch filter.
+
+
+
+## Installation
+
+### WINDOWS
+Install [Conda](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe) with Python 3.12  (other versions could work, check Matlab Python compatibility [here](https://it.mathworks.com/support/requirements/python-compatibility.html)
+
+In _anaconda prompt_ run:
+
+```conda install pinocchio -c conda-forge```
+
+locate the executable with
+
+```where python```
+
+If you got the error **LookupError('unknown encoding: uf-16-le')** run:
+
+```
+set PYTHONUTF8=1
+conda install pinocchio -c conda-forge
+```
+
+### UBUNTU
+install python3 and python3-pip (check Matlab Python compatibility [here](https://it.mathworks.com/support/requirements/python-compatibility.html) then run
+```pip3 install pinocchio```
+
+locate the executable with
+
+```which python```
 
