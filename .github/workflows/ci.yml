@@ -19,5 +19,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest scipy numpy pin
 
-      - name: Run Tests
+      - name: Run Tests Notch
         run: pytest test_notch_filter.py
+      - name: Run Tests FIR
+        run: pytest test_fir_filter.py
+      - name: Run Tests LP
+        run: pytest test_low_pass_filter.py
