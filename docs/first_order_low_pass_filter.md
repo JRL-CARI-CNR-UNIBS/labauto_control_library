@@ -1,7 +1,8 @@
 # FirstOrderLowPassFilter - Discrete-time First Order Low Pass Filter
 
 ## Overview
-The `FirstOrderLowPassFilter` class implements a discrete-time first-order low-pass filter. 
+The `FirstOrderLowPassFilter` class implements a discrete-time first-order low-pass filter.
+$\frac{1}{T_f s+1}$
 
 
 ## Constructor
@@ -42,4 +43,3 @@ print("Filtered Output:", output)
 
 ## License
 This project is open-source and can be used freely for research and development purposes.
-
