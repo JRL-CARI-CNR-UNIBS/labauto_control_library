@@ -1,6 +1,6 @@
 ## Overview
 
-This repository contains a collection of MATLAB classes used for the _Laboratorio di Automatica_ course at the [_Università degli Studi di Brescia_](https://www.unibs.it/it). The authors decline any responsibility for usage outside this scope. The provided tools support the development and implementation of control systems for mechatronic applications. 
+This repository contains a collection of MATLAB classes used for the _Laboratorio di Automatica_ course at the [_Università degli Studi di Brescia_](https://www.unibs.it/it). The authors decline any responsibility for usage outside this scope. The provided tools support the development and implementation of control systems for mechatronic applications.
 Developed by [CARI JRL](https://cari.unibs.it/).
 
 ## Build Status
@@ -11,8 +11,8 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 ## Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
-  - [Controller Classes](#controller-classes)
   - [Filter Classes](#filter-classes)
+  - [Controller Classes](#controller-classes)
   - [Motion Law](#motion-law)
 - [Robot Model Structure](#robot-model-structure)
 - [Simulation](#simulation)
@@ -23,24 +23,25 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 
 ## Key Features
 
+### Filter Classes
+
+- **BaseFilter:** Base class for filter implementations, providing common functionalities.
+- **FirstOrderLowPassFilter:** [Discrete-time first-order low-pass filter for signal conditioning](docs/first_order_low_pass_filter.md).
+- **NotchFilter:** Discrete-time notch filter for mitigating specific frequency components.
+- **FIRFilter:** Discrete-time Finite Impulse Response (FIR) filter for smoothing signals.
+
 ### Controller Classes
 
 - **BaseController:** Abstract class for designing control laws in mechatronic systems.
 - **PIDController:** Proportional-Integral-Derivative controller with customizable gains and filtering options.
 - **CascadeController:** Cascade control structure combining inner and outer controllers for improved performance.
-  
+
   ![Cascade Controller Scheme](docs/cascade_controller.png)
 
 - **DecentralizedController:** Decentralized control structure with precomputed torque.
-  
+
   ![Decentralized Controller Scheme](docs/decentralized_controller.png)
 
-### Filter Classes
-
-- **NotchFilter:** Discrete-time notch filter for mitigating specific frequency components.
-- **FirstOrderLowPassFilter:** Discrete-time first-order low-pass filter for signal conditioning.
-- **FIRFilter:** Discrete-time Finite Impulse Response (FIR) filter for smoothing signals.
-- **BaseFilter:** Base class for filter implementations, providing common functionalities.
 
 ### Motion Law
 
@@ -102,4 +103,3 @@ install python3 and python3-pip (check Matlab Python compatibility [here](https:
 locate the executable with
 
 ```which python```
-
