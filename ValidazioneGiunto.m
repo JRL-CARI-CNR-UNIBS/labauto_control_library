@@ -8,17 +8,17 @@ clc;clear all;close all;
 giunto="primo";
 if giunto=="primo"
     load modello_primo_giunto.mat
-    tests=dir('validation_chirp_experiment_joint1*.mat');
+    tests=dir('tests/validation_chirp_experiment_joint1*.mat');
 else
     load modello_secondo_giunto.mat
-    tests=dir('validation_chirp_experiment_joint2*.mat');
+    tests=dir('tests/validation_chirp_experiment_joint2*.mat');
 end    
 
 bode_opts = bodeoptions('cstprefs');
 bode_opts.PhaseWrapping = 'on';
 
 for itest=1:length(tests)
-    load(tests(itest).name)
+    load([tests(itest).folder,filesep,tests(itest).name])
     fprintf('Giunto=%d\n',joint_number+1);
     fprintf('Chirp con Ampiezza %f da %f a %f\n',A,f0,f1)
     punto_di_lavoro=mean(joint_position);

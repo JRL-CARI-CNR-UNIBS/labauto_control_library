@@ -6,14 +6,14 @@ clc;clear all;close all;
 giunto="secondo";
 if giunto=="primo"
     load modello_primo_giunto.mat
-    tests=dir('wp_validation_chirp_experiment_joint1_*.mat');
+    tests=dir('tests/wp_validation_chirp_experiment_joint1_*.mat');
 else
     load modello_secondo_giunto.mat
-    tests=dir('wp_validation_chirp_experiment_joint2_*.mat');
+    tests=dir('tests/wp_validation_chirp_experiment_joint2_*.mat');
 end    
 
 for itest=1:length(tests)
-    load(tests(itest).name)
+    load([tests(itest).folder,filesep,tests(itest).name])
     fprintf('Giunto=%d\n',joint_number+1);
     fprintf('Chirp con Ampiezza %f da %f a %f\n',A,f0,f1)
     punto_di_lavoro=mean(joint_position);

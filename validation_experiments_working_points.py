@@ -158,4 +158,4 @@ for wp in working_points:
         "A": A,
         "time": t
     }
-    savemat(f"wp_validation_chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})
+    savemat(f"tests/wp_validation_chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})

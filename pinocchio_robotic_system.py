@@ -15,7 +15,7 @@ class PinocchioRoboticSystem(MechanicalSystem):
         self.data = self.model.createData()
         
         # Load simulation parameters from YAML file
-        with open(f'+{model_name}/config.yaml', 'r') as file:
+        with open(f'{model_name}/config.yaml', 'r') as file:
             config = yaml.safe_load(file)
         
         # Extract parameters from YAML configuration

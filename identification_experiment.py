@@ -53,7 +53,7 @@ joint1_ctrl = CascadeController(Tc=Tc, inner_ctrl=inner_ctrl1, outer_ctrl=outer_
 joint2_ctrl = CascadeController(Tc=Tc, inner_ctrl=inner_ctrl2, outer_ctrl=outer_ctrl2)
 
 # Define inverse dynamics function
-model = pin.buildModelFromUrdf(f'+{model_name}/model.urdf')
+model = pin.buildModelFromUrdf(f'{model_name}/model.urdf')
 model_data = model.createData()
 
 def pinocchio_inverse_dynamics(model, model_data, params, q, dq, ddq):
@@ -147,7 +147,7 @@ test_data = {
     "A": A,
     "time": t
 }
-savemat(f"chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})
+savemat(f"tests/chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})
 
 # Plot results in 3x2 grid
 fig, axes = plt.subplots(3, 2, figsize=(10, 10))
