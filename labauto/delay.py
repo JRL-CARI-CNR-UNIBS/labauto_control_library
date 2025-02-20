@@ -1,5 +1,5 @@
 import numpy as np
-from control import BaseFilter
+from labauto import BaseFilter
 
 
 class Delay(BaseFilter):

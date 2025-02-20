@@ -1,4 +1,4 @@
-from control import BaseController
+from labauto import BaseController
 
 
 class CascadeController(BaseController):

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from trapezoidal_motion_law import TrapezoidalMotionLaw
+from labauto import TrapezoidalMotionLaw
 
 # Set the cycle time (sampling time) for motion law updates
 Tc = 1e-3

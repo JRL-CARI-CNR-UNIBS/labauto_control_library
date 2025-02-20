@@ -1,7 +1,7 @@
 import numpy as np
 import pinocchio as pin
 import yaml
-from mechanical_system import MechanicalSystem  # Import the base class
+from labauto import MechanicalSystem  # Import the base class
 
 class PinocchioRoboticSystem(MechanicalSystem):
     def __init__(self, st, model_name):

@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from control import PIDController
+from labauto import PIDController
 
 @pytest.mark.parametrize("Tc, Kp, Ki, Kd", [
     (0.01, 1.0, 0.1, 0.05),

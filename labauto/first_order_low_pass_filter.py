@@ -1,5 +1,5 @@
 import math
-from control import BaseFilter
+from labauto import BaseFilter
 
 class FirstOrderLowPassFilter(BaseFilter):
     """

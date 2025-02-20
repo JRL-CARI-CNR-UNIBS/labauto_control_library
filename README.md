@@ -20,6 +20,7 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 - [MATLAB Scripts](#matlab-scripts)
 - [Testing & Debugging](#python-scripts-for-testing-and-debugging)
 - [Installation](#installation)
+- [Usage in MATLAB](#usage_in_matlab)
 
 ## Key Features
 
@@ -100,3 +101,6 @@ install python3 and python3-pip (check Matlab Python compatibility [here](https:
 locate the executable with
 
 ```which python```
+
+## Usage in MATLAB
+Execute the script ```configure_python``` at the matlab startup

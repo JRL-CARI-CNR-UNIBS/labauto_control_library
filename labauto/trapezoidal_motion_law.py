@@ -1,5 +1,5 @@
 import numpy as np
-from motion_law import MotionLaw
+from labauto import MotionLaw
 
 class TrapezoidalMotionLaw(MotionLaw):
     def __init__(self, max_Dy, max_DDy, Tc):

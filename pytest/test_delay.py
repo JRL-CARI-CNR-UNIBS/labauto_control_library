@@ -5,7 +5,7 @@ import os
 
 # Get the project root directory and add it to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from control import Delay
+from labauto import Delay
 
 
 def test_delay_initialization():
