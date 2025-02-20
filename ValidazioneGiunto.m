@@ -8,10 +8,10 @@ clc;clear all;close all;
 giunto="primo";
 if giunto=="primo"
     load modello_primo_giunto.mat
-    tests=dir('tests/validation_chirp_experiment_joint1*.mat');
+    tests=dir([model_name,'/tests/validation_chirp_experiment_joint1*.mat']);
 else
     load modello_secondo_giunto.mat
-    tests=dir('tests/validation_chirp_experiment_joint2*.mat');
+    tests=dir([model_name,'/tests/validation_chirp_experiment_joint2*.mat']);
 end    
 
 bode_opts = bodeoptions('cstprefs');

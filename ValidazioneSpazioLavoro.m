@@ -2,14 +2,14 @@
 % Carico i risultati del test nei vari working point (wp)
 
 clc;clear all;close all;
-
+model_name='scara0';
 giunto="secondo";
 if giunto=="primo"
-    load modello_primo_giunto.mat
-    tests=dir('tests/wp_validation_chirp_experiment_joint1_*.mat');
+    load([model_name,'/modello_primo_giunto'])
+    tests=dir([model_name,'/tests/wp_validation_chirp_experiment_joint1_*.mat']);
 else
-    load modello_secondo_giunto.mat
-    tests=dir('tests/wp_validation_chirp_experiment_joint2_*.mat');
+    load([model_name,'/modello_secondo_giunto.mat'])
+    tests=dir([model_name,'/tests/wp_validation_chirp_experiment_joint2_*.mat']);
 end    
 
 for itest=1:length(tests)

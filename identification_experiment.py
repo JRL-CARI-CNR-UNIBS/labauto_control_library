@@ -147,7 +147,7 @@ test_data = {
     "A": A,
     "time": t
 }
-savemat(f"tests/chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})
+savemat(f"{model_name}/tests/chirp_experiment_joint{joint_number+1}_{timestamp}.mat", {key: test_data[key] for key in test_data})
 
 # Plot results in 3x2 grid
 fig, axes = plt.subplots(3, 2, figsize=(10, 10))
