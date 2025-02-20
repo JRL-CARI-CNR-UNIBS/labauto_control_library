@@ -1,4 +1,4 @@
-from base_controller import BaseController
+from control import BaseController
 
 
 class CascadeController(BaseController):

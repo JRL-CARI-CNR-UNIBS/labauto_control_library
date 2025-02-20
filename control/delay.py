@@ -1,5 +1,5 @@
 import numpy as np
-from base_filter import BaseFilter
+from control import BaseFilter
 
 
 class Delay(BaseFilter):

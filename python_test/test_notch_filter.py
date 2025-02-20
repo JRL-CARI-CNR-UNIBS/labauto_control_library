@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from scipy.signal import TransferFunction, cont2discrete, dlti, dstep
-from notch_filter import NotchFilter
+from control import NotchFilter
 
 
 def create_transfer_function(wn, xi_z, xi_p):

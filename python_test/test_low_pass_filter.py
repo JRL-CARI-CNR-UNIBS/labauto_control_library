@@ -1,4 +1,4 @@
-from first_order_low_pass_filter import FirstOrderLowPassFilter
+from control import FirstOrderLowPassFilter
 import numpy as np
 import pytest
 from scipy.signal import TransferFunction, cont2discrete, dlti, dstep

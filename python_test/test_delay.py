@@ -1,6 +1,11 @@
 import numpy as np
 import pytest
-from delay import Delay
+import sys
+import os
+
+# Get the project root directory and add it to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from control import Delay
 
 
 def test_delay_initialization():

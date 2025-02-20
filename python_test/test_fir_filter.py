@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from fir_filter import FIRFilter
+from control import FIRFilter
 from scipy.signal import lfilter, dlti
 
 

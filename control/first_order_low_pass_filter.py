@@ -1,5 +1,5 @@
 import math
-from base_filter import BaseFilter
+from control import BaseFilter
 
 class FirstOrderLowPassFilter(BaseFilter):
     """

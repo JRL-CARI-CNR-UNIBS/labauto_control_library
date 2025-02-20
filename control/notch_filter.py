@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import bilinear
-from base_filter import BaseFilter
+from control import BaseFilter
 
 
 class NotchFilter(BaseFilter):
