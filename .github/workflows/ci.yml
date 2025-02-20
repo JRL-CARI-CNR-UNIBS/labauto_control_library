@@ -20,12 +20,12 @@ jobs:
           pip install pytest scipy numpy pin
 
       - name: Run Tests Notch
-        run: pytest pytest/test_notch_filter.py
+        run: pytest labauto_pytest/test_notch_filter.py
       - name: Run Tests FIR
-        run: pytest pytest/test_fir_filter.py
+        run: pytest labauto_pytest/test_fir_filter.py
       - name: Run Tests LP
-        run: pytest pytest/test_low_pass_filter.py
+        run: pytest labauto_pytest/test_low_pass_filter.py
       - name: Run Delay
-        run: pytest pytest/test_delay.py
+        run: pytest labauto_pytest/test_delay.py
       - name: Run PID
-        run: pytest pytest/test_pid_controller.py
+        run: pytest labauto_pytest/test_pid_controller.py
