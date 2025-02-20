@@ -17,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest scipy numpy pin
+          pip install pytest scipy numpy pin yaml
 
       - name: Run Tests Notch
         run: pytest labauto_pytest/test_notch_filter.py
