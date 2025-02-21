@@ -20,9 +20,9 @@ class PIDController(BaseController):
         :param Kp: Proportional gain (must be non-negative).
         :param Ki: Integral gain (must be non-negative).
         :param Kd: Derivative gain (must be non-negative).
-        :param filters_on_derivative_error: Filter applied to derivative of the error (optional).
-        :param filters_on_error_signal: Filter applied to error signal (optional).
-        :param filters_on_measure: Filter applied to measurement (optional).
+        :param filters_on_derivative_error: Filters applied to derivative of the error (optional).
+        :param filters_on_error_signal: Filters applied to error signal (optional).
+        :param filters_on_measure: Filters applied to measurement (optional).
         """
         super().__init__(Tc)
 
@@ -43,7 +43,18 @@ class PIDController(BaseController):
         self._integral_value = 0
         self._filtered_error_for_derivative = 0
 
-    def starting(self, reference: float, y: float, u: float, uff: float):
+        if self._filters_on_error_signal:
+            for f in self._filters_on_error_signal:
+                f.starting(0)
+
+        if self._filters_on_measure:
+            for f in self._filters_on_measure:
+                f.starting(0)
+
+        if self._filters_on_derivative_error:
+            for f in self._filters_on_measure:
+                f.starting(0)
+    def starting(self, reference: float, measure: float, u: float, uff: float):
         """
         Set the starting conditions based on the input.
 
@@ -52,9 +63,21 @@ class PIDController(BaseController):
         :param u: Control action.
         :param uff: Feedforward action.
         """
-        error_signal = reference - y
+        error_signal = reference - measure
         self._filtered_error_for_derivative = error_signal
         self._integral_value = u - self._proportional_gain * error_signal - uff
+
+        if self._filters_on_error_signal:
+            for f in self._filters_on_error_signal:
+                f.starting(error_signal)
+
+        if self._filters_on_measure:
+            for f in self._filters_on_measure:
+                f.starting(measure)
+
+        if self._filters_on_derivative_error:
+            for f in self._filters_on_measure:
+                f.starting(0)
 
     def compute_control_action(self, reference: float, y: float, uff: float) -> float:
         """
@@ -68,12 +91,18 @@ class PIDController(BaseController):
         error_signal = reference - y
 
         if self._filters_on_error_signal:
-            error_signal = self._filters_on_error_signal.step(error_signal)
+            for f in self._filters_on_error_signal:
+                error_signal = f.step(error_signal)
 
         if self._derivative_gain != 0:
             last_filtered_error = self._filtered_error_for_derivative
-            self._filtered_error_for_derivative = self._filters_on_derivative_error.step(
-                error_signal) if self._filters_on_derivative_error else error_signal
+
+            error_signal_for_compute_derivative=error_signal
+            if self._filters_on_error_signal:
+                for f in self._filters_on_derivative_error:
+                    error_signal_for_compute_derivative = f.step(error_signal_for_compute_derivative)
+
+            self._filtered_error_for_derivative = error_signal_for_compute_derivative
             derivative_term = self._derivative_gain * (
                         self._filtered_error_for_derivative - last_filtered_error) / self._Tc
         else:

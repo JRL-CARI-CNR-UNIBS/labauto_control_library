@@ -114,4 +114,4 @@ class PinocchioRoboticSystem(MechanicalSystem):
         return self.stateToOutput @ self.x + self.sigma_y * np.random.randn(len(self.sigma_y))
 
     def link_position(self):
-        return self.x[:self.njoints]  # Link position
+        return self.x[:self.njoints].copy()  # Link position

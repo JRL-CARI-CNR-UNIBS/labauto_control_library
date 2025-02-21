@@ -1,45 +1,71 @@
 controller:
-  inner1:
-    Kp: 25.0
-    Ki: 2.0
-    Kd: 0.0
-  outer1:
-    Kp: 5.0
-    Ki: 0.0
-    Kd: 0.0
-  inner2:
-    Kp: 10.0
-    Ki: 1.0
-    Kd: 0.0
-  outer2:
-    Kp: 5.0
-    Ki: 0.0
-    Kd: 0.0
+  cascade_controllers:
+  - name: "joint1"
+    inner:
+      Kp: 25.0
+      Ki: 2.0
+      Kd: 0.0
+      filters_on_derivative_error:
+      - type: "FirstOrderLowPassFilter"
+        time_constant: 0.01
+      filters_on_error_signal:
+      - type: "NotchFilter"
+        natural_frequency: 1200
+        zeros_damping: 0.147
+        poles_damping: 0.8
+      filters_on_measure:
+        - type: "FirstOrderLowPassFilter"
+          time_constant: 0.005
+    outer:
+      Kp: 5.0
+      Ki: 0.0
+      Kd: 0.0
+  - name: "joint2"
+    inner:
+      Kp: 10.0
+      Ki: 1.0
+      Kd: 0.1
+      filters_on_derivative_error:
+        - type: "FirstOrderLowPassFilter"
+          time_constant: 0.01
+      filters_on_error_signal:
+        - type: "NotchFilter"
+          natural_frequency: 500
+          zeros_damping: 0.1
+          poles_damping: 0.7
+      filters_on_measure:
+        - type: "FirstOrderLowPassFilter"
+          time_constant: 0.01
+    outer:
+      Kp: 5.0
+      Ki: 0.0
+      Kd: 0.0
+
 
 model_parameters:
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
-- 0.0
+- 0.000000
+- 0.972830
+- -0.023873
+- 0.000000
+- -0.000000
+- 0.000000
+- -0.000000
+- 0.000000
+- 0.000000
+- -1.635114
+- 0.127514
+- 0.245142
+- -0.010845
+- 0.000000
+- 0.000000
+- 0.000000
+- 0.000000
+- 0.000000
+- 0.000000
+- -0.945401
+- 3.207053
+- 3.242633
+- 4.588067
+- 4.549484
 
 

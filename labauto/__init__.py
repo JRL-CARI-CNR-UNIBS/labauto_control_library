@@ -15,3 +15,5 @@ from .pinocchio_robotic_system import PinocchioRoboticSystem
 
 from .motion_law import MotionLaw
 from .trapezoidal_motion_law import TrapezoidalMotionLaw
+
+from .load_instructions import loadInstructions

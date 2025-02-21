@@ -13,7 +13,7 @@ model_name = "scara0"
 
 
 # Load controller parameters and dynamic parameters
-with open(f'{model_name}/control_config.yaml', 'r') as file:
+with open(f'{model_name}/initial_control_config.yaml', 'r') as file:
     params_yaml = yaml.safe_load(file)
     controller_params = params_yaml['controller']
     dynamic_params = np.array(params_yaml['model_parameters'])

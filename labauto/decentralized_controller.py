@@ -65,10 +65,10 @@ class DecentralizedController(BaseController):
         qref, dqref, ddqref = reference[:self.njoints], reference[self.njoints:2 * self.njoints], reference[
                                                                                                   2 * self.njoints:]
         precomputed_torque = self.inverse_dynamics_fcn(qref, dqref, ddqref)
-        uff += precomputed_torque
+        feedforward = uff + precomputed_torque
 
         u = np.zeros(self.njoints)
         for idx in range(self.njoints):
-            u[idx] = self.joint_ctrls[idx].compute_control_action([qref[idx], dqref[idx]], [q[idx], dq[idx]], uff[idx])
+            u[idx] = self.joint_ctrls[idx].compute_control_action([qref[idx], dqref[idx]], [q[idx], dq[idx]], feedforward[idx])
 
         return u

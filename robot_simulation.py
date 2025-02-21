@@ -1,20 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from pinocchio_robotic_system import PinocchioRoboticSystem
-from trapezoidal_motion_law import TrapezoidalMotionLaw
-from decentralized_controller import DecentralizedController
-from cascade_controller import CascadeController
-from pid_controller import PIDController
+from labauto import PinocchioRoboticSystem
+from labauto import TrapezoidalMotionLaw
+from labauto import loadController
+from labauto import loadInstructions
+
 from scipy.io import savemat
 from datetime import datetime
-import pinocchio as pin
-from functools import partial
 import yaml
 
 model_name = "scara0"
+#program_name="random_trj"
+program_name="test_trj1"
 
 # Load controller parameters and dynamic parameters
-with open(f'+{model_name}/control_config.yaml', 'r') as file:
+with open(f'{model_name}/control_config.yaml', 'r') as file:
     params_yaml = yaml.safe_load(file)
     controller_params = params_yaml['controller']
     dynamic_params = np.array(params_yaml['model_parameters'])
@@ -27,39 +27,10 @@ robot.initialize()
 Tc = robot.get_sampling_period()
 
 # Load the tuned controller using parameters from YAML
-Kp_inner1, Ki_inner1, Kd_inner1 = controller_params['inner1']['Kp'], controller_params['inner1']['Ki'], controller_params['inner1']['Kd']
-Kp_outer1, Ki_outer1, Kd_outer1 = controller_params['outer1']['Kp'], controller_params['outer1']['Ki'], controller_params['outer1']['Kd']
-Kp_inner2, Ki_inner2, Kd_inner2 = controller_params['inner2']['Kp'], controller_params['inner2']['Ki'], controller_params['inner2']['Kd']
-Kp_outer2, Ki_outer2, Kd_outer2 = controller_params['outer2']['Kp'], controller_params['outer2']['Ki'], controller_params['outer2']['Kd']
-
-inner_ctrl1 = PIDController(Tc=Tc, Kp=Kp_inner1, Ki=Ki_inner1, Kd=Kd_inner1)
-outer_ctrl1 = PIDController(Tc=Tc, Kp=Kp_outer1, Ki=Ki_outer1, Kd=Kd_outer1)
-inner_ctrl2 = PIDController(Tc=Tc, Kp=Kp_inner2, Ki=Ki_inner2, Kd=Kd_inner2)
-outer_ctrl2 = PIDController(Tc=Tc, Kp=Kp_outer2, Ki=Ki_outer2, Kd=Kd_outer2)
-
-joint1_ctrl = CascadeController(Tc=Tc, inner_ctrl=inner_ctrl1, outer_ctrl=outer_ctrl1)
-joint2_ctrl = CascadeController(Tc=Tc, inner_ctrl=inner_ctrl2, outer_ctrl=outer_ctrl2)
-
-# Define inverse dynamics function
-model = pin.buildModelFromUrdf(f'+{model_name}/model.urdf')
-model_data = model.createData()
-
-def pinocchio_inverse_dynamics(model, model_data, params, q, dq, ddq):
-    Phi_dynamic = pin.computeJointTorqueRegressor(model, model_data, q, dq, ddq)
-    dof = model.nq
-
-    diag_dq = np.diag(dq)  # diag(dq)
-    diag_sign_dq = np.diag(np.sign(dq))  # diag(sign(dq))
-    Phi_friction = np.hstack((diag_dq, diag_sign_dq))
-    Phi = np.hstack((Phi_dynamic, Phi_friction))
-    return Phi @ params
-
-inverse_dynamics = partial(pinocchio_inverse_dynamics, model, model_data, dynamic_params)
-
-decentralized_ctrl = DecentralizedController(Tc=Tc, joint_ctrls=[joint1_ctrl, joint2_ctrl],
-                                             inverse_dynamics_fcn=inverse_dynamics)
+decentralized_ctrl=loadController(Tc,controller_params,dynamic_params,model_name)
 decentralized_ctrl.initialize()
 decentralized_ctrl.set_umax(robot.get_umax())
+
 
 # Initial reference is equal to the initial state of the robot
 measured_output = robot.read_sensor_value()
@@ -69,14 +40,13 @@ DDq0 = np.array([0, 0])
 initial_reference = np.concatenate((q0, Dq0, DDq0))
 
 # Define the Motion Law
-max_Dq = np.array([5, 5])
+max_Dq = np.array([2, 2])
 max_DDq = np.array([5, 5])
 ml = TrapezoidalMotionLaw(max_Dq, max_DDq, Tc)
 ml.set_initial_condition(q0)
 
 # Define a sequence of motion instructions
-instructions = ["pause: 1", "move: [0, 1.57]", "move: [0.5, 1.57]", "move: [0.5, 1.0]",
-                "move: [-0.5, 1.2]", "move: [-1.5, -2]", "move: [0, 0]", "move: [0, 1.57]", "pause: 1"]
+instructions = loadInstructions(f'{model_name}/{program_name}.txt')
 ml.add_instructions(instructions)
 
 # Read the initial torque
@@ -86,7 +56,7 @@ feedforward_action = np.array([0.0, 0.0])
 decentralized_ctrl.starting(initial_reference, measured_output, joint_torque, feedforward_action)
 
 # Simulation loop
-t, measured_signal, control_action, reference_signal = [], [], [], []
+t, measured_signal, control_action, reference_signal, link_position = [], [], [], [], []
 actual_time=0.0
 while ml.depending_instructions():
     target_q, target_Dq, target_DDq = ml.compute_motion_law()
@@ -100,6 +70,7 @@ while ml.depending_instructions():
     measured_signal.append(measured_output)
     control_action.append(joint_torque)
     reference_signal.append(reference)
+    link_position.append(robot.link_position())
     actual_time+=Tc
 
     robot.simulate()
@@ -109,6 +80,7 @@ t = np.array(t)
 measured_signal = np.array(measured_signal)
 control_action = np.array(control_action)
 reference_signal = np.array(reference_signal)
+link_position = np.array(link_position)
 
 # Post-processing
 joint_position = measured_signal[:, :2]
@@ -127,10 +99,11 @@ test_data = {
     "joint_position": joint_position,
     "joint_velocity": joint_velocity,
     "joint_torque": control_action,
+    "link_position": link_position,
     "time": t,
     "name": "test"
 }
-savemat(f"test_data_{timestamp}.mat", {key: test_data[key] for key in test_data})
+savemat(f"{model_name}/tests/{program_name}_{timestamp}.mat", {key: test_data[key] for key in test_data})
 
 # Plot results in 3x2 grid
 fig, axes = plt.subplots(3, 2, figsize=(10, 10))
