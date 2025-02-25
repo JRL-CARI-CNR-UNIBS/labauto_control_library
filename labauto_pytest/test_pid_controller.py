@@ -32,7 +32,7 @@ def test_pid_initialization(Tc, Kp, Ki, Kd):
 def test_pid_starting(Tc, Kp, Ki, Kd):
     """Test starting conditions of the PID controller."""
     pid = PIDController(Tc, Kp, Ki, Kd)
-    pid.starting(reference=2.0, y=1.0, u=0.5, uff=0.0)
+    pid.starting(reference=2.0, measure=1.0, u=0.5, uff=0.0)
     assert pid._integral_value == 0.5 - pid._proportional_gain, "Incorrect integral value after starting."
     assert pid._filtered_error_for_derivative == 1.0, "Filtered error should match initial error."
 
@@ -51,7 +51,7 @@ def test_pid_control_action(Tc, Kp, Ki, Kd):
     r=1
     de=(r-y)/Tc
     pid = PIDController(Tc, Kp, Ki, Kd)
-    pid.starting(reference=0.0, y=0.0, u=0.0, uff=0.0)
+    pid.starting(reference=0.0, measure=0.0, u=0.0, uff=0.0)
     control_action = pid.compute_control_action(reference=1.0, y=0.0, uff=0.0)
     expected_output = pid._proportional_gain*(r-y)+de*pid._derivative_gain
     assert np.isclose(control_action, expected_output, atol=1e-5), "Control action mismatch."
