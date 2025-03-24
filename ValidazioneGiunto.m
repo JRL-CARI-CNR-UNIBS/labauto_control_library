@@ -4,13 +4,13 @@
 % Carico i risultati del test
 
 clc;clear all;close all;
-
+model_name='scara0';
 giunto="primo";
 if giunto=="primo"
-    load modello_primo_giunto.mat
+    load([model_name,'/modello_primo_giunto'])
     tests=dir([model_name,'/tests/validation_chirp_experiment_joint1*.mat']);
 else
-    load modello_secondo_giunto.mat
+    load([model_name,'/modello_secondo_giunto.mat'])
     tests=dir([model_name,'/tests/validation_chirp_experiment_joint2*.mat']);
 end    
 

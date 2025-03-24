@@ -29,9 +29,9 @@ Duration = 20.0 # seconds
 t = np.arange(0, Duration + Tc, Tc)  # Ensure inclusion of Duration if possible
 
 f0=1.0
-f1=500.0
+f1=500.0 # Tc=0.001 Fc=1000Hz, Shannon/Nyquist 500Hz
 A=10.0
-joint_number=1
+joint_number=1  # array index
 chirp_signal = A*chirp(t, f0=f0, f1=f1, t1=Duration, method='logarithmic')
 
 
@@ -80,9 +80,11 @@ while ml.depending_instructions():
 measured_signal, control_action=  [], []
 feedforward_action = np.array([0.0, 0.0])
 
+
 for actual_time,disturbance in zip(t,chirp_signal):
     target_q, target_Dq, target_DDq = ml.compute_motion_law()
     reference = np.concatenate((target_q, target_Dq, target_DDq))
+
     measured_output = robot.read_sensor_value()
     feedforward_action[joint_number]= disturbance
     joint_torque = decentralized_ctrl.compute_control_action(reference, measured_output, feedforward_action)

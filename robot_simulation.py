@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 from labauto import PinocchioRoboticSystem
 from labauto import TrapezoidalMotionLaw
 from labauto import loadController
@@ -32,17 +33,21 @@ decentralized_ctrl.initialize()
 decentralized_ctrl.set_umax(robot.get_umax())
 
 
+# read from sensors
+# compute control action
+# write to actuators
+
 # Initial reference is equal to the initial state of the robot
 measured_output = robot.read_sensor_value()
-q0 = measured_output[:2]
-Dq0 = measured_output[2:]
+q0 = measured_output[:2] # prende valori 0 e 1 (2 escluso)
+Dq0 = measured_output[2:] # prende valori 2 e 3
 DDq0 = np.array([0, 0])
 initial_reference = np.concatenate((q0, Dq0, DDq0))
 
 # Define the Motion Law
 max_Dq = np.array([2, 2])
 max_DDq = np.array([5, 5])
-ml = TrapezoidalMotionLaw(max_Dq, max_DDq, Tc)
+ml = TrapezoidalMotionLaw(max_Dq, max_DDq, Tc) # crea legge di moto
 ml.set_initial_condition(q0)
 
 # Define a sequence of motion instructions

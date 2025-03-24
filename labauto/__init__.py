@@ -1,4 +1,4 @@
-from .base_filter import BaseFilter  # This makes `BaseFilter` accessible directly via `from control import BaseFilter`
+from .base_filter import BaseFilter  # This makes `BaseFilter` accessible directly via `from labauto import BaseFilter`
 from .fir_filter import FIRFilter
 from .notch_filter import NotchFilter
 from .delay import Delay
