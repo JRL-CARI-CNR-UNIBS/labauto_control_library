@@ -8,7 +8,7 @@ except Exception:
     from mechanical_system import MechanicalSystem
 
 
-class MuJoCoGantrySEA(MechanicalSystem):
+class MuJoCoMechanicalSystem(MechanicalSystem):
     """MechanicalSystem-compatible MuJoCo wrapper.
 
     - Actuation is applied to motor-side joints via MuJoCo motor actuators (motor_1..3).
