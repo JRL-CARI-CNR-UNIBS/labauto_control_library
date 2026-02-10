@@ -12,6 +12,7 @@ from .load_controller import loadController
 
 from .mechanical_system import MechanicalSystem
 from .pinocchio_robotic_system import PinocchioRoboticSystem
+from .mujoco_robotic_system import PinocchioRoboticSystem
 
 from .motion_law import MotionLaw
 from .trapezoidal_motion_law import TrapezoidalMotionLaw
