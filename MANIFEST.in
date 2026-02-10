@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+recursive-include cari_control_libs *.yaml *.json *.urdf *.txt
+recursive-include cari_control_libs *config*
+recursive-include cari_control_libs data *.json *.csv
