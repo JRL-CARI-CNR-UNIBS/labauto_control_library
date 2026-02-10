@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "labauto"
+version = "0.1.0"
+description = "Controller classes and function, JRL-CARI"
+authors = [
+    { name="Manuel Beschi", email="manuel.beschi@unibs.it" },
+]
+dependencies = [
+    "requests"
+]
+
