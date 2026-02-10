@@ -5,11 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "labauto"
 version = "0.1.0"
-description = "Controller classes and function, JRL-CARI"
+description = "Controller classes and functions, JRL-CARI"
+readme = "README.md"
+requires-python = ">=3.10"
 authors = [
-    { name="Manuel Beschi", email="manuel.beschi@unibs.it" },
+  { name = "Manuel Beschi", email = "manuel.beschi@unibs.it" }
 ]
 dependencies = [
-    "requests"
+  "requests"
 ]
+
+[tool.setuptools]
+packages = ["labauto"]
 
