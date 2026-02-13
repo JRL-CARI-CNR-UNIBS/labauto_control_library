@@ -140,3 +140,6 @@ class MechanicalSystem:
         """
         usat = np.clip(u, -self.umax, self.umax)
         return usat
+        
+    def close(self):
+        return

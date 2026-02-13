@@ -1,5 +1,24 @@
 import numpy as np
 import mujoco
+import os
+import sys
+import time
+
+# Optional interactive visualization (requires a GUI)
+try:
+    import mujoco.viewer  # type: ignore
+except Exception:
+    mujoco.viewer = None  # type: ignore[attr-defined]
+
+
+def assert_viewer_supported() -> None:
+    """Raise a helpful error if mujoco.viewer is unavailable in this environment."""
+    if sys.platform == "darwin":
+        # On macOS, the MuJoCo viewer requires the mjpython executable.
+        exe = os.path.basename(sys.executable).lower()
+        if "mjpython" not in exe:
+            raise RuntimeError("On macOS, run with: mjpython your_script.py (required for mujoco.viewer)")
+
 
 # Robust import (works whether you're running inside the labauto package or standalone)
 try:
@@ -25,6 +44,8 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
         ee_site: str = "ee",
         sample_period: float = 0.001,
         simulating_steps: int = 5,
+        enable_viewer: bool = True,
+        viewer_decimation: int = 30,
     ):
         # Initialize base class with sampling period
         super().__init__(st=float(sample_period))
@@ -49,6 +70,12 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
         self.simulating_steps = int(simulating_steps)
         self.simulating_period = self.sample_period / self.simulating_steps
 
+        # Viewer (optional)
+        self.enable_viewer = bool(enable_viewer)
+        self.viewer_decimation = int(viewer_decimation)
+        self.viewer_count = 0
+        self.viewer = None
+
         # MechanicalSystem fields (override the defaults from MechanicalSystem.__init__)
         self.num_input = len(self.motor_actuators)
         dof = len(self.motor_joints)
@@ -67,6 +94,7 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
 
         # umax will be updated after model load; keep a sane placeholder for pre-init calls
         self.umax = np.full(self.num_input, 5.0)
+        self.sigma_y = np.concatenate([np.full(dof, 1e-4), np.full(dof, 3e-2)]).flatten()
 
     def initialize(self):
         # Reset base bookkeeping (x,u,t)
@@ -78,6 +106,35 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
 
         self.data = mujoco.MjData(self.model)
         mujoco.mj_forward(self.model, self.data)
+
+        # Optional interactive visualization
+        # Close any existing viewer (in case initialize is called more than once)
+        if getattr(self, "viewer", None) is not None:
+            try:
+                self.viewer.close()
+            except Exception:
+                pass
+        self.viewer = None
+        self.viewer_count = 0
+        if self.enable_viewer and getattr(mujoco, "viewer", None) is not None:
+            assert_viewer_supported()
+            self.viewer = mujoco.viewer.launch_passive(
+                self.model,
+                self.data,
+                show_left_ui=False,
+                show_right_ui=False,
+            )
+            print("Viewer")
+            # Set a sensible default camera distance
+            try:
+                with self.viewer.lock():
+                    self.viewer.cam.distance = 10.0
+                    self.viewer.cam.azimuth = 100.0     # deg
+                    self.viewer.cam.elevation = -25.0   # deg
+            except Exception:
+                # If the viewer doesn't expose cam/lock on this platform/version, ignore.
+                pass
+
 
         # Resolve actuator indices
         self._act_ids = np.array(
@@ -130,7 +187,7 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
 
         # Optional measurement noise hook (MechanicalSystem convention)
         if np.any(np.asarray(self.sigma_y) != 0):
-            y = y + float(self.sigma_y) * np.random.randn(y.size)
+            y = y + self.sigma_y * np.random.randn(y.size)
 
         # Keep MechanicalSystem state vector consistent with latest measurement
         self.x = y.copy()
@@ -169,7 +226,38 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
         for _ in range(self.simulating_steps):
             mujoco.mj_step(self.model, self.data)
 
+        # Optional viewer update (decimated)
+        if getattr(self, "viewer", None) is not None:
+            self.viewer_count += 1
+            if self.viewer_count >= self.viewer_decimation:
+                self.viewer_count = 0
+                try:
+                    self.viewer.sync()
+                except Exception:
+                    pass
+
         # Advance MechanicalSystem time and refresh x
         self.t += self.st
         self.x = self.read_sensor_value().copy()
 
+    def close(self):
+        """Close resources (viewer). Safe to call multiple times."""
+        if getattr(self, "viewer", None) is not None:
+            try:
+                self.viewer.close()
+                # Wait briefly for the viewer thread to stop
+                while getattr(self.viewer, "is_running", lambda: False)():
+                    time.sleep(0.01)
+            except Exception:
+                pass
+            finally:
+                self.viewer = None
+
+    def __del__(self):
+        # Best-effort cleanup (avoid raising in destructor)
+        try:
+            self.close()
+        except Exception:
+            pass
+
+ 
