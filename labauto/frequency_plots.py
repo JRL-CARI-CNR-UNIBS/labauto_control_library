@@ -13,12 +13,13 @@ def _next_pow2(n: int) -> int:
         n = 1
     return 1 << int(np.ceil(np.log2(n)))
 
-
 def plot_frf(
     y: np.ndarray,
     u: np.ndarray,
     fs: float,
     *,
+    existing_fig_frf: go.Figure | None = None,
+    trace_name: str | None = None,
     nperseg: int = 2048,
     noverlap: int | None = None,
     nfft: int | None = None,
@@ -33,32 +34,9 @@ def plot_frf(
 
         H1(f) = S_yu(f) / S_uu(f)
 
-    Plots:
-      - Magnitude (dB) and phase (deg) as a Bode plot (log frequency axis).
-      - Optionally the magnitude-squared coherence γ²_yu(f).
-
-    Parameters
-    ----------
-    y, u : np.ndarray
-        Output and input signals (same length). Will be squeezed to 1D.
-    fs : float
-        Sampling frequency [Hz], must be > 0.
-    nperseg : int
-        Segment length for Welch/CPSD/coherence.
-    noverlap : int | None
-        Overlap in samples. Default: nperseg//2.
-    nfft : int | None
-        FFT length. Default: next power of 2 >= nperseg.
-    detrend : str | None
-        Detrend passed to scipy.signal functions.
-    window : str
-        Window name (e.g., 'hann').
-    eps : float
-        Small positive constant to avoid division by zero / log(0).
-    max_freq : float | None
-        If set, limit plots to [0, max_freq] Hz.
-    show_coherence : bool
-        If True, add coherence subplot.
+    If existing_fig_frf is provided, add traces to it (overlay).
+    Assumes existing figure uses rows:
+      row 1: magnitude, row 2: phase, row 3: coherence (optional).
 
     Returns
     -------
@@ -152,40 +130,75 @@ def plot_frf(
         f_coh_plot = f_coh[mposc]
         coh_plot = coh[mposc]
 
-    rows = 3 if show_coherence else 2
-    titles = (
-        ["Magnitude |H(f)| [dB]", "Phase ∠H(f) [deg]"]
-        + (["Coherence γ²_yu(f)"] if show_coherence else [])
-    )
+    # --- Figure creation / reuse
+    if trace_name is None:
+        trace_name = f"FRF (nperseg={nperseg}, nfft={nfft})"
 
-    fig = make_subplots(
-        rows=rows,
-        cols=1,
-        shared_xaxes=True,
-        vertical_spacing=0.08,
-        subplot_titles=titles,
-    )
+    if existing_fig_frf is None:
+        rows = 3 if show_coherence else 2
+        titles = (
+            ["Magnitude |H(f)| [dB]", "Phase ∠H(f) [deg]"]
+            + (["Coherence γ²_yu(f)"] if show_coherence else [])
+        )
 
-    fig.add_trace(go.Scatter(x=f_plot, y=mag_plot, mode="lines", name="|H| [dB]"), row=1, col=1)
-    fig.add_trace(go.Scatter(x=f_plot, y=phase_plot, mode="lines", name="phase [deg]"), row=2, col=1)
+        fig = make_subplots(
+            rows=rows,
+            cols=1,
+            shared_xaxes=True,
+            vertical_spacing=0.08,
+            subplot_titles=titles,
+        )
+
+        # Axes formatting
+        for r in range(1, rows + 1):
+            fig.update_xaxes(type="log", row=r, col=1)
+
+        fig.update_yaxes(title_text="dB", row=1, col=1)
+        fig.update_yaxes(title_text="deg", row=2, col=1)
+        fig.update_xaxes(title_text="Frequency [Hz]", row=rows, col=1)
+
+        if show_coherence:
+            fig.update_yaxes(title_text="γ²", range=[0, 1], row=3, col=1)
+
+        fig.update_layout(
+            title="Estimated FRF (H1 = S_yu / S_uu)" + (" + coherence" if show_coherence else ""),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+            height=900 if show_coherence else 700,
+        )
+    else:
+        fig = existing_fig_frf
+
+        # If user wants coherence but the existing figure likely has only 2 rows,
+        # we can’t safely “add a row” in-place. Fail fast with a clear message.
+        if show_coherence:
+            # Best-effort heuristic: if any trace is assigned to row 3, it exists.
+            has_row3 = any(getattr(tr, "yaxis", "") in ("y3", "yaxis3") for tr in fig.data)
+            # Another heuristic: layout has yaxis3
+            has_yaxis3 = hasattr(fig.layout, "yaxis3") and fig.layout.yaxis3 is not None
+            if not (has_row3 or has_yaxis3):
+                raise ValueError(
+                    "show_coherence=True but existing_fig_frf does not appear to have a 3rd subplot row. "
+                    "Create the figure initially with show_coherence=True, then reuse it."
+                )
+
+    # --- Add traces (always overlay)
+    fig.add_trace(
+        go.Scatter(x=f_plot, y=mag_plot, mode="lines", name=f"{trace_name} |H| [dB]"),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(x=f_plot, y=phase_plot, mode="lines", name=f"{trace_name} phase [deg]"),
+        row=2,
+        col=1,
+    )
 
     if show_coherence:
-        fig.add_trace(go.Scatter(x=f_coh_plot, y=coh_plot, mode="lines", name="coherence"), row=3, col=1)
-        fig.update_yaxes(title_text="γ²", range=[0, 1], row=3, col=1)
-
-    # Axes formatting
-    for r in range(1, rows + 1):
-        fig.update_xaxes(type="log", row=r, col=1)
-
-    fig.update_yaxes(title_text="dB", row=1, col=1)
-    fig.update_yaxes(title_text="deg", row=2, col=1)
-    fig.update_xaxes(title_text="Frequency [Hz]", row=rows, col=1)
-
-    fig.update_layout(
-        title="Estimated FRF (H1 = S_yu / S_uu)" + (" + coherence" if show_coherence else ""),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
-        height=900 if show_coherence else 700,
-    )
+        fig.add_trace(
+            go.Scatter(x=f_coh_plot, y=coh_plot, mode="lines", name=f"{trace_name} coherence"),
+            row=3,
+            col=1,
+        )
 
     frf = {
         "f": f,
