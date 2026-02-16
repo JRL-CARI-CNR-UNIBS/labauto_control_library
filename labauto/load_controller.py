@@ -76,7 +76,7 @@ def loadController(Tc, controller_params, dynamic_params, model_name):
         cascade_controllers.append(loadCascade(Tc, cascade_ctrl_params))
 
     # Define inverse dynamics function
-    model = pin.buildModelFromUrdf(f'{model_name}/model.urdf')
+    model = pin.buildModelFromMJCF(f'{model_name}/rigid_model.xml')
     model_data = model.createData()
 
     def pinocchio_inverse_dynamics(model, model_data, params, q, dq, ddq):

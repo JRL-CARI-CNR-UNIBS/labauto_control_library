@@ -18,3 +18,4 @@ from .motion_law import MotionLaw
 from .trapezoidal_motion_law import TrapezoidalMotionLaw
 
 from .load_instructions import loadInstructions
+from .frequency_plots import plot_frf, plot_spectrogram
