@@ -46,7 +46,7 @@ def loadPid(Tc, params):
         filters_on_derivative_error=[]
 
     if "filters_on_measure" in params.keys():
-        print("filters_on_error_signal:")
+        print("filters_on_measure:")
         filters_on_measure = loadFilters(Tc, params["filters_on_measure"])
     else:
         filters_on_measure = []

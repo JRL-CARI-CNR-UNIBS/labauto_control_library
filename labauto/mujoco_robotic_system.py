@@ -36,24 +36,46 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
     """
 
     def __init__(
-        self,
-        xml_path: str,
-        motor_actuators=("motor_1", "motor_2", "motor_3"),
-        motor_joints=("joint_1", "joint_2", "joint_3"),
-        spring_joints=("spring_1", "spring_2", "spring_3"),
-        ee_site: str = "ee",
-        sample_period: float = 0.001,
-        simulating_steps: int = 5,
-        enable_viewer: bool = True,
-        viewer_decimation: int = 30,
+            self,
+            xml_path: str,
+            ee_site: str = "ee",
+            sample_period: float = 0.001,
+            simulating_steps: int = 5,
+            enable_viewer: bool = True,
+            viewer_decimation: int = 30,
     ):
         # Initialize base class with sampling period
         super().__init__(st=float(sample_period))
 
         self.xml_path = xml_path
-        self.motor_actuators = list(motor_actuators)
-        self.motor_joints = list(motor_joints)
-        self.spring_joints = list(spring_joints)
+        model = mujoco.MjModel.from_xml_path(self.xml_path)
+
+        self.motor_actuators = [
+            mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_ACTUATOR, i)
+            for i in range(model.nu)
+        ]
+        # Joints connected to (joint-targeting) actuators
+        motor_joints = []
+        for i in range(model.nu):
+            if model.actuator_trntype[i] != mujoco.mjtTrn.mjTRN_JOINT:
+                continue
+            j_id = int(model.actuator_trnid[i, 0])
+            j_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, j_id)
+            motor_joints.append(j_name)
+
+        # unique, preserve order
+        self.motor_joints = list(dict.fromkeys(motor_joints))
+
+        # Joints with springs (stiffness > 0)
+        # model.jnt_stiffness is per-joint; >0 means spring enabled for that joint
+        spring_joints = []
+        for j_id in range(model.njnt):
+            if model.jnt_stiffness[j_id] > 0:
+                j_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, j_id)
+                spring_joints.append(j_name)
+
+        self.spring_joints = spring_joints
+
         self.ee_site_name = ee_site
 
         self.model = None
@@ -89,8 +111,12 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
         self.x = self.x0.copy()
 
         # Names consistent with the gantry API
-        self.output_names = [f"q_{i+1}" for i in range(dof)] + [f"dq_{i+1}" for i in range(dof)]
-        self.input_names = [f"force_{i+1}" for i in range(self.num_input)]
+        n = min(dof, len(self.motor_joints))
+        self.output_names = [self.motor_joints[i] for i in range(n)] + [f"vel_{self.motor_joints[i]}" for i in
+                                                                        range(n)]
+
+        m = min(self.num_input, len(self.motor_joints))
+        self.input_names = [f"force_{self.motor_joints[i]}" for i in range(m)]
 
         # umax will be updated after model load; keep a sane placeholder for pre-init calls
         self.umax = np.full(self.num_input, 5.0)
@@ -124,17 +150,16 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
                 show_left_ui=False,
                 show_right_ui=False,
             )
-            print("Viewer")
+
             # Set a sensible default camera distance
             try:
                 with self.viewer.lock():
                     self.viewer.cam.distance = 10.0
-                    self.viewer.cam.azimuth = 100.0     # deg
-                    self.viewer.cam.elevation = -25.0   # deg
+                    self.viewer.cam.azimuth = 100.0  # deg
+                    self.viewer.cam.elevation = -25.0  # deg
             except Exception:
                 # If the viewer doesn't expose cam/lock on this platform/version, ignore.
                 pass
-
 
         # Resolve actuator indices
         self._act_ids = np.array(
@@ -260,4 +285,4 @@ class MuJoCoMechanicalSystem(MechanicalSystem):
         except Exception:
             pass
 
- 
+

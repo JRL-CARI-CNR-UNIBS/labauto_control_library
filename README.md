@@ -46,31 +46,180 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 - **MotionLaw:** Abstract class for computing motion law and performing a list of instructions.
 - **TrapezoidalMotionLaw:** Class for computing trapezoidal motion law.
 
-## Robot Model Structure
-- **model.urdf** - Description of the robot.
-- **config.yaml** - Description of flexible joints (motor inertia, friction, stiffness, and damping).
+# Robot Model Structure
+Each robot folder (e.g., `Scara0/`) should contain these files.
+- **model.xml** - Description of the robot.
 - **control_config.yaml** - Control parameters.
+- **initial_control_config.yaml** - Initial values of the control parameters (used in identification phase)
+- **trajectory.txt** - part program in custom format or **trajectory.gcode** part program in GCode format
+- **tests/** subfolder to store the results. 
 
-Each robot folder (e.g., `Scara0/`) should contain these three files.
+# Control Structure
+
+The `DecentralizedController` class is designed for controlling a multi-joint rigid body robot.
+
+The controller compute a feedforward action (precomputed torque) using a rigid model, and it has a `CascadeController`
+```mermaid
+flowchart LR
+  %% ----------- External signals -----------
+  
+  %% ----------- Decentralized controller (multi-joint) -----------
+  
+  subgraph DCSIN["SIGNALS"]
+    direction TB
+    QREF["q_ref (position refs)"]
+    QFB["q, dq feedback (all joints)"]
+  end
+    
+  subgraph FFW["FEEDFORWARD"]
+    direction TB
+    TAU_FF["tau_ff (precomputed torque)"]
+    PARAMS["model_parameters"] --> TAU_FF
+  end
+
+  subgraph DCIN["FEEDBACK"]
+    direction TB
+    C1["CascadeController: joint_1"]
+    C2["CascadeController: joint_2"]
+    CN["CascadeController: joint_n"]
+  end
+
+  QREF --> C1
+  QFB --> C1
+  QREF --> C2
+  QFB --> C2
+  QREF --> CN
+  QFB --> CN
+
+  DCIN --> TAU_FB["tau_fb"]
+
+  %% ----------- Feedforward model (outside controller) -----------
+  QREF --> TAU_FF
+
+  %% ----------- Sum + plant -----------
+  TAU_FF --> SUM["tau_cmd = tau_ff + tau_fb"]
+  TAU_FB --> SUM
+
+  %% ---- link coloring (0-based, in declaration order) ----
+  %% 0: PARAMS --> TAU_FF  (leave default)
+  linkStyle 1 stroke:#1f77b4,stroke-width:3px;   
+  %% QREF --> C1
+  linkStyle 2 stroke:#d62728,stroke-width:3px;   
+  %% QFB --> C1
+  linkStyle 3 stroke:#1f77b4,stroke-width:3px;   
+  %% QREF --> C2
+  linkStyle 4 stroke:#d62728,stroke-width:3px;   
+  %% QFB --> C2
+  linkStyle 5 stroke:#1f77b4,stroke-width:3px;   
+  %% QREF --> CN
+  linkStyle 6 stroke:#d62728,stroke-width:3px;   
+  %% QFB --> CN
+  %% 7: DCIN --> TAU_FB    (leave default)
+  linkStyle 8 stroke:#1f77b4,stroke-width:3px;   
+  %% QREF --> TAU_FF
+  %% 9: TAU_FF --> SUM     (leave default)
+  %% 10: TAU_FB --> SUM    (leave default)
+```
+
+for each joint. `CascadeController` has a outer controller to control joint position and a inner controller to control 
+velocity.
+
+
+```mermaid
+flowchart LR
+  subgraph J["CascadeController (one joint)"]
+    r_out["Outer reference"] --> e_out["Outer error"]
+    y_out["Outer measure"] --> e_out
+
+    e_out --> Fes["filters_on_error_signal"]
+    y_out --> Fm["filters_on_measure"]
+    e_out --> Fde["filters_on_derivative_error"]
+
+    Fes --> PIDo["Outer PID (Kp Ki Kd)"]
+    Fm  --> PIDo
+    Fde --> PIDo
+
+    PIDo --> r_in["Inner reference"]
+
+    r_in --> e_in["Inner error"]
+    y_in["Inner measure"] --> e_in
+
+    e_in --> Fes2["filters_on_error_signal"]
+    y_in --> Fm2["filters_on_measure"]
+    e_in --> Fde2["filters_on_derivative_error"]
+
+    Fes2 --> PIDi["Inner PID (Kp Ki Kd)"]
+    Fm2  --> PIDi
+    Fde2 --> PIDi
+
+    PIDi --> u_fb["Feedback output"]
+  end
+
+  u_ff["Feedforward tau_ff = Phi * params"] --> sum["Sum"]
+  u_fb --> sum
+  sum --> u_cmd["Command"]
+```
+
+### Control parameters
+Control parameters are described as follows:
+```yaml
+controller:
+  cascade_controllers:
+    - name: joint1
+      inner:
+        Kp: 25.0
+        Ki: 2.0
+        Kd: 0.1
+        filters_on_derivative_error:
+          - type: FirstOrderLowPassFilter
+            time_constant: 0.01
+          - type: NotchFilter
+            natural_frequency: 60.0
+            zeros_damping: 0.05
+            poles_damping: 0.2
+      outer:
+        Kp: 5.0
+        Ki: 0.0
+        Kd: 0.0
+        filters_on_measure:
+          - type: FIRFilter
+            coefficients: [0.25, 0.5, 0.25]
+        filters_on_error_signal:
+          - type: FirstOrderLowPassFilter
+            time_constant: 0.02
+    - name: joint2
+      inner:
+        Kp: 35.0
+        Ki: 2.0
+        Kd: 0.1
+        filters_on_derivative_error:
+          - type: FirstOrderLowPassFilter
+            time_constant: 0.01
+          - type: NotchFilter
+            natural_frequency: 60.0
+            zeros_damping: 0.05
+            poles_damping: 0.2
+      outer:
+        Kp: 5.0
+        Ki: 0.0
+        Kd: 0.0
+        filters_on_measure:
+          - type: FIRFilter
+            coefficients: [0.25, 0.5, 0.25]
+        filters_on_error_signal:
+          - type: FirstOrderLowPassFilter
+            time_constant: 0.02
+model_parameters:
+  - 0.0
+  - 0.0
+  # ...
+```
+
+see [here](docs/configuration.md) for more details.
 
 ## Simulation
 - **mechanical_system.py** - Abstract class for simulating mechanical systems.
-- **pinocchio_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads URDF and config from a folder. [slide 15 of this lecture](http://www.diag.uniroma1.it/deluca/EECI-IGSC-2023-M16_Lecture_Flexible_Joints_ADL.pdf)
-
-## Python Scripts
-- **robot_simulation.py** - Run a simulation of the robot performing a list of instructions.
-- **identification_experiment.py** - Run a chirp identification experiment on the robot in a working point.
-- **validation_experiment.py** - Run randomized chirp validation experiments on the robot in a working point.
-- **validation_experiments_working_points.py** - Run chirp validation experiments on the robot in multiple working points.
-
-## MATLAB Scripts
-- **IdentificazioneGiunto1.mlx** - Identification of joint 1.
-- **IdentificazioneGiunto2.mlx** - Identification of joint 2.
-- **ValidazioneGiunto.m** - Validation in the same working point.
-- **ValidazioneSpazioLavoro.m** - Validation in multiple working configurations.
-
-## Python Scripts for Testing and Debugging
-- **test_notch_filter.py** - Run tests on the notch filter.
+- **mujoco_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads [MJCF](https://mujoco.readthedocs.io/en/stable/modeling.html) and config from a folder.
 
 
 
