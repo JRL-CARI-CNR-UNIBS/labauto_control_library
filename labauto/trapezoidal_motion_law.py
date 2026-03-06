@@ -82,6 +82,7 @@ class TrapezoidalMotionLaw(MotionLaw):
         t_tot = t_acc_joints + t_cruise_vel_joints + t_dec_joints
         idx_worst_case = np.argmax(t_tot)
         
+        self.total_time = self.t_acc + self.t_cruise_vel + self.t_dec
         self.t_acc = t_acc_joints[idx_worst_case]
         self.t_cruise_vel = t_cruise_vel_joints[idx_worst_case]
         self.t_dec = t_dec_joints[idx_worst_case]
