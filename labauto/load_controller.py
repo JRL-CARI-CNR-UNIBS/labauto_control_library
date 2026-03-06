@@ -81,6 +81,8 @@ def loadController(Tc, controller_params, dynamic_params, model_name):
 
     def pinocchio_inverse_dynamics(model, model_data, params, q, dq, ddq):
         Phi_dynamic = pin.computeJointTorqueRegressor(model, model_data, q, dq, ddq)
+        if Phi_dynamic.ndim==1:
+            Phi_dynamic=Phi_dynamic.reshape(1, -1)
         dof = model.nq
 
         diag_dq = np.diag(dq)
