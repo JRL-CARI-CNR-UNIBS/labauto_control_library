@@ -51,6 +51,6 @@ class FirstOrderLowPassFilter(BaseFilter):
         if not isinstance(input_value, (int, float)):
             raise ValueError("Input must be a scalar")
         
-        output = self._x
         self._x = self._A * self._x + self._B * input_value
+        output = self._x
         return output
