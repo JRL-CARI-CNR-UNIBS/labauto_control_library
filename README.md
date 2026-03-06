@@ -1,12 +1,10 @@
 ## Overview
 
-This repository contains a collection of MATLAB classes used for the _Laboratorio di Automatica_ course at the [_Università degli Studi di Brescia_](https://www.unibs.it/it). The authors decline any responsibility for usage outside this scope. The provided tools support the development and implementation of control systems for mechatronic applications.
-Developed by [CARI JRL](https://cari.unibs.it/).
+This repository contains a collection of MATLAB and Python tools used for the _Laboratorio di Automatica_ course at the [_Università degli Studi di Brescia_](https://www.unibs.it/it). The authors decline any responsibility for usage outside this scope. The provided tools support the development, simulation, and implementation of control systems for mechatronic applications. Developed by [CARI JRL](https://cari.unibs.it/).
 
 ## Build Status
 
 ![CI Test](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg?branch=master)
-
 
 ## Table of Contents
 - [Overview](#overview)
@@ -15,12 +13,15 @@ Developed by [CARI JRL](https://cari.unibs.it/).
   - [Controller Classes](#controller-classes)
   - [Motion Law](#motion-law)
 - [Robot Model Structure](#robot-model-structure)
+- [Control Structure](#control-structure)
 - [Simulation](#simulation)
-- [Python Scripts](#python-scripts)
-- [MATLAB Scripts](#matlab-scripts)
-- [Testing & Debugging](#python-scripts-for-testing-and-debugging)
 - [Installation](#installation)
-- [Usage in MATLAB](#usage_in_matlab)
+  - [Create the Conda environment](#create-the-conda-environment)
+  - [Install dependencies](#install-dependencies)
+  - [Update the package](#update-the-package)
+  - [Platform notes](#platform-notes)
+  - [Tips and troubleshooting](#tips-and-troubleshooting)
+- [Usage in MATLAB](#usage-in-matlab)
 
 ## Key Features
 
@@ -39,38 +40,35 @@ Developed by [CARI JRL](https://cari.unibs.it/).
 - **CascadeController:** [Cascade control structure combining inner and outer controllers for improved performance](docs/cascade_controller.md).
 - **DecentralizedController:** [Decentralized control structure with precomputed torque](docs/decentralized_controller.md).
 
-
-
 ### Motion Law
 
-- **MotionLaw:** Abstract class for computing motion law and performing a list of instructions.
-- **TrapezoidalMotionLaw:** Class for computing trapezoidal motion law.
+- **MotionLaw:** Abstract class for computing motion laws and executing a list of instructions.
+- **TrapezoidalMotionLaw:** Class for computing trapezoidal motion laws.
 
-# Robot Model Structure
-Each robot folder (e.g., `Scara0/`) should contain these files.
-- **model.xml** - Description of the robot.
+## Robot Model Structure
+
+Each robot folder (for example, `Scara0/`) should contain these files:
+
+- **model.xml** - Robot description.
 - **control_config.yaml** - Control parameters.
-- **initial_control_config.yaml** - Initial values of the control parameters (used in identification phase)
-- **trajectory.txt** - part program in custom format or **trajectory.gcode** part program in GCode format
-- **tests/** subfolder to store the results. 
+- **initial_control_config.yaml** - Initial control parameters, typically used during identification.
+- **trajectory.txt** - Part program in the custom format, or **trajectory.gcode** in G-code format.
+- **tests/** - Folder used to store test results.
 
-# Control Structure
+## Control Structure
 
-The `DecentralizedController` class is designed for controlling a multi-joint rigid body robot.
+The `DecentralizedController` class is designed for controlling a multi-joint rigid-body robot.
 
-The controller compute a feedforward action (precomputed torque) using a rigid model, and it has a `CascadeController`
+The controller computes a feedforward action (precomputed torque) using a rigid model, and it includes one `CascadeController` for each joint.
+
 ```mermaid
 flowchart LR
-  %% ----------- External signals -----------
-  
-  %% ----------- Decentralized controller (multi-joint) -----------
-  
   subgraph DCSIN["SIGNALS"]
     direction TB
     QREF["q_ref (position refs)"]
     QFB["q, dq feedback (all joints)"]
   end
-    
+
   subgraph FFW["FEEDFORWARD"]
     direction TB
     TAU_FF["tau_ff (precomputed torque)"]
@@ -93,37 +91,24 @@ flowchart LR
 
   DCIN --> TAU_FB["tau_fb"]
 
-  %% ----------- Feedforward model (outside controller) -----------
   QREF --> TAU_FF
 
-  %% ----------- Sum + plant -----------
   TAU_FF --> SUM["tau_cmd = tau_ff + tau_fb"]
   TAU_FB --> SUM
 
-  %% ---- link coloring (0-based, in declaration order) ----
-  %% 0: PARAMS --> TAU_FF  (leave default)
-  linkStyle 1 stroke:#1f77b4,stroke-width:3px;   
-  %% QREF --> C1
-  linkStyle 2 stroke:#d62728,stroke-width:3px;   
-  %% QFB --> C1
-  linkStyle 3 stroke:#1f77b4,stroke-width:3px;   
-  %% QREF --> C2
-  linkStyle 4 stroke:#d62728,stroke-width:3px;   
-  %% QFB --> C2
-  linkStyle 5 stroke:#1f77b4,stroke-width:3px;   
-  %% QREF --> CN
-  linkStyle 6 stroke:#d62728,stroke-width:3px;   
-  %% QFB --> CN
-  %% 7: DCIN --> TAU_FB    (leave default)
-  linkStyle 8 stroke:#1f77b4,stroke-width:3px;   
-  %% QREF --> TAU_FF
-  %% 9: TAU_FF --> SUM     (leave default)
-  %% 10: TAU_FB --> SUM    (leave default)
+  linkStyle 1 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 2 stroke:#d62728,stroke-width:3px;
+  linkStyle 3 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 4 stroke:#d62728,stroke-width:3px;
+  linkStyle 5 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 6 stroke:#d62728,stroke-width:3px;
+  linkStyle 8 stroke:#1f77b4,stroke-width:3px;
 ```
 
-for each joint. `CascadeController` has a outer controller to control joint position and a inner controller to control 
-velocity.
+For each joint, `CascadeController` uses:
 
+- an outer controller for joint position
+- an inner controller for joint velocity
 
 ```mermaid
 flowchart LR
@@ -161,7 +146,9 @@ flowchart LR
 ```
 
 ### Control parameters
+
 Control parameters are described as follows:
+
 ```yaml
 controller:
   cascade_controllers:
@@ -215,41 +202,126 @@ model_parameters:
   # ...
 ```
 
-see [here](docs/configuration.md) for more details.
+See [configuration details](docs/configuration.md) for more information.
 
 ## Simulation
+
 - **mechanical_system.py** - Abstract class for simulating mechanical systems.
-- **mujoco_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads [MJCF](https://mujoco.readthedocs.io/en/stable/modeling.html) and config from a folder.
-
-
+- **mujoco_robotic_system.py** - Simulates a robot with flexible joints using the Spong model. Reads [MJCF](https://mujoco.readthedocs.io/en/stable/modeling.html) files and configuration data from a robot folder.
 
 ## Installation
 
-### WINDOWS
-Install [Conda](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe) with Python 3.12  (other versions could work, check Matlab Python compatibility [here](https://it.mathworks.com/support/requirements/python-compatibility.html)
+The recommended installation method is a dedicated [**Conda environment**](https://www.anaconda.com/download/success).
 
-In _anaconda prompt_ run:
+### Create the Conda environment
 
-```conda install pinocchio -c conda-forge```
+Create and activate a clean environment:
 
-locate the executable with
-
-```where python```
-
-If you got the error **LookupError('unknown encoding: uf-16-le')** run:
-
+```bash
+conda create -n labauto python=3.11
+conda activate labauto
 ```
-set PYTHONUTF8=1
+
+You can choose another compatible Python version if needed.
+
+### Install dependencies
+
+Install the required dependencies in the following order:
+
+```bash
+conda install conda-forge::mujoco-python
 conda install pinocchio -c conda-forge
+conda install pyyaml
+conda install main::aiohttp-jinja2
+pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
 ```
 
-### UBUNTU
-install python3 and python3-pip (check Matlab Python compatibility [here](https://it.mathworks.com/support/requirements/python-compatibility.html) then run
-```pip3 install pinocchio```
+### Update the package
 
-locate the executable with
+To update the package to the latest version from the `master` branch:
 
-```which python```
+```bash
+pip install --upgrade "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
+```
+
+### Platform notes
+
+#### Windows
+
+Use **Anaconda Prompt** or any terminal where Conda is available:
+
+```bash
+conda create -n labauto python=3.11
+conda activate labauto
+conda install conda-forge::mujoco-python
+conda install pinocchio -c conda-forge
+conda install pyyaml
+conda install main::aiohttp-jinja2
+pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
+```
+
+To locate the Python executable:
+
+```bash
+where python
+```
+
+#### Linux
+
+Use a standard terminal:
+
+```bash
+conda create -n labauto python=3.11
+conda activate labauto
+conda install conda-forge::mujoco-python
+conda install pinocchio -c conda-forge
+conda install pyyaml
+conda install main::aiohttp-jinja2
+pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
+```
+
+To locate the Python executable:
+
+```bash
+which python
+```
+
+#### macOS
+
+Use a standard terminal:
+
+```bash
+conda create -n labauto python=3.11
+conda activate labauto
+conda install conda-forge::mujoco-python
+conda install pinocchio -c conda-forge
+conda install pyyaml
+conda install main::aiohttp-jinja2
+pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
+```
+
+On macOS, use `mjpython` instead of `python` when running MuJoCo-based scripts:
+
+```bash
+mjpython your_script.py
+```
+
+### Tips and troubleshooting
+
+- Use a **clean Conda environment** dedicated to this package.
+- **Do not source ROS** in the same terminal where the Conda environment is active, because the ROS environment may load a different Pinocchio version and cause conflicts.
+- If you need ROS and this package on the same machine, use separate terminal sessions.
+- If you encounter environment-related issues, open a new terminal, avoid sourcing ROS, activate the Conda environment again, and retry.
 
 ## Usage in MATLAB
-Execute the script ```configure_python``` at the matlab startup
+
+Run the `configure_python` script at MATLAB startup.
+
+Before configuring MATLAB, you can verify the Python interpreter path from the active Conda environment with:
+
+```bash
+where python   # Windows
+which python   # Linux / macOS
+```
+
+On macOS, keep in mind that MuJoCo-based scripts should be launched with `mjpython`.
