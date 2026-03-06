@@ -55,5 +55,5 @@ class FIRFilter(BaseFilter):
         self._buffer[0] = input_value
         
         # Compute the output using the FIR filter equation
-        output = float(np.dot(self._buffer.T, self._fir_coef))
+        output = float(np.dot(self._buffer.T, self._fir_coef).item())
         return output

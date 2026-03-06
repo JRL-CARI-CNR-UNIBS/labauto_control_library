@@ -4,8 +4,27 @@ import math
 
 
 class PIDController(BaseController):
+    """
+    PIDController - Proportional-Integral-Derivative (PID) Controller implementation.
+
+    This class implements a PID controller, a widely used feedback controller in control systems.
+    It consists of Proportional (P), Integral (I), and Derivative (D) components for computing
+    the control action.
+    """
+
     def __init__(self, Tc: float, Kp: float, Ki: float, Kd: float,
                  filters_on_derivative_error=None, filters_on_error_signal=None, filters_on_measure=None):
+        """
+        Constructor to create a PIDController object.
+
+        :param Tc: Sampling time (must be a positive scalar).
+        :param Kp: Proportional gain (must be non-negative).
+        :param Ki: Integral gain (must be non-negative).
+        :param Kd: Derivative gain (must be non-negative).
+        :param filters_on_derivative_error: Filters applied to derivative of the error (optional).
+        :param filters_on_error_signal: Filters applied to error signal (optional).
+        :param filters_on_measure: Filters applied to measurement (optional).
+        """
         super().__init__(Tc)
 
         for name, value in [("Kp", Kp), ("Ki", Ki), ("Kd", Kd)]:
@@ -43,6 +62,14 @@ class PIDController(BaseController):
                 f.initialize()
 
     def starting(self, reference: float, measure: float, u: float, uff: float):
+        """
+        Set the starting conditions based on the input.
+
+        :param reference: Setpoint.
+        :param y: Output measurement.
+        :param u: Control action.
+        :param uff: Feedforward action.
+        """
         error_signal = reference - measure
         self._filtered_error_for_derivative = error_signal
         self._integral_value = u - self._proportional_gain * error_signal - uff

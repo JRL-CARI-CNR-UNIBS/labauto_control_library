@@ -218,7 +218,7 @@ The recommended installation method is a dedicated [**Conda environment**](https
 Create and activate a clean environment:
 
 ```bash
-conda create -n labauto python=3.11
+conda create -n labauto python=3.11 -y
 conda activate labauto
 ```
 
@@ -229,10 +229,11 @@ You can choose another compatible Python version if needed.
 Install the required dependencies in the following order:
 
 ```bash
-conda install conda-forge::mujoco-python
-conda install pinocchio -c conda-forge
-conda install pyyaml
-conda install main::aiohttp-jinja2
+conda install -y conda-forge::mujoco-python
+conda install -y pinocchio -c conda-forge
+conda install -y pyyaml
+conda install -y main::aiohttp-jinja2
+conda install -y plotly
 pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
 ```
 
@@ -251,12 +252,13 @@ pip install --upgrade "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control
 Use **Anaconda Prompt** or any terminal where Conda is available:
 
 ```bash
-conda create -n labauto python=3.11
+conda create -n labauto python=3.11 -y
 conda activate labauto
-conda install conda-forge::mujoco-python
-conda install pinocchio -c conda-forge
-conda install pyyaml
-conda install main::aiohttp-jinja2
+conda install -y conda-forge::mujoco-python
+conda install -y pinocchio -c conda-forge
+conda install -y pyyaml
+conda install -y main::aiohttp-jinja2
+conda install -y plotly
 pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
 ```
 
@@ -271,12 +273,13 @@ where python
 Use a standard terminal:
 
 ```bash
-conda create -n labauto python=3.11
+conda create -n labauto python=3.11 -y
 conda activate labauto
-conda install conda-forge::mujoco-python
-conda install pinocchio -c conda-forge
-conda install pyyaml
-conda install main::aiohttp-jinja2
+conda install -y conda-forge::mujoco-python
+conda install -y pinocchio -c conda-forge
+conda install -y pyyaml
+conda install -y main::aiohttp-jinja2
+conda install -y plotly
 pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
 ```
 
@@ -291,12 +294,13 @@ which python
 Use a standard terminal:
 
 ```bash
-conda create -n labauto python=3.11
+conda create -n labauto python=3.11 -y
 conda activate labauto
-conda install conda-forge::mujoco-python
-conda install pinocchio -c conda-forge
-conda install pyyaml
-conda install main::aiohttp-jinja2
+conda install -y conda-forge::mujoco-python
+conda install -y pinocchio -c conda-forge
+conda install -y pyyaml
+conda install -y main::aiohttp-jinja2
+conda install -y plotly
 pip install "git+https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library#master"
 ```
 
