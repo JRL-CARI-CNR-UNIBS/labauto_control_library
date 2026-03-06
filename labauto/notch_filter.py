@@ -32,8 +32,17 @@ class NotchFilter(BaseFilter):
         den = [1, 2 * xi_p * omega_n, omega_n ** 2]
 
         # Discretization using bilinear transformation (Tustin)
-        self._b, self._a = bilinear(num, den, fs=1 / Ts)
+        b, a = bilinear(num, den, fs=1.0 / Tc)
 
+        b = np.asarray(b, dtype=float)
+        a = np.asarray(a, dtype=float)
+
+        if not np.isclose(a[0], 1.0):
+            b = b / a[0]
+            a = a / a[0]
+
+        self._b = b
+        self._a = a
         self._x = np.zeros(len(self._b) - 1)  # Input delay buffer
         self._y = np.zeros(len(self._a) - 1)  # Output delay buffer
 
