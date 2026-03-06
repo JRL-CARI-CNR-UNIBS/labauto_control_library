@@ -10,6 +10,10 @@ $F(s)=\frac{s^2+2\xi_z s \omega_n +\omega_n^2}{s^2+2\xi_p s \omega_n +\omega_n^2
 discretized with Tustin method using _Tc_ as sample period.
 
 
+### Bode diagrams
+![Module](notch_bode_mag.png)
+![Phase](notch_bode_phase.png)
+
 
 ## Constructor
 ```python
