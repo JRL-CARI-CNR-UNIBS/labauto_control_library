@@ -88,8 +88,14 @@ class PIDController(BaseController):
         :param uff: Feedforward action.
         :return: Control action value.
         """
-        error_signal = reference - y
 
+        measure = y
+        if self._filters_on_measure:
+            for f in self._filters_on_measure:
+                measure = f.step(measure)
+
+        error_signal = reference - measure
+        
         if self._filters_on_error_signal:
             for f in self._filters_on_error_signal:
                 error_signal = f.step(error_signal)
