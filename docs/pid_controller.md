@@ -13,11 +13,11 @@ flowchart LR
     S["Σ : e_raw = r - y_m"] --> FE[Error filter]
     FE --> E[e]
 
-    E --> KP[Proportional block<br/>Kp]
-    E --> IU[Integrator state update<br/>I_state += Ki * Tc * e]
+    E --> KP[Proportional block Kp]
+    E --> IU[Integrator state update I_state += Ki * Tc * e]
     E --> FD[Derivative-path filter]
 
-    FD --> KD[Derivative block<br/>Kd * (e_d - e_d_prev) / Tc]
+    FD --> KD[Derivative block Kd * (e_d - e_d_prev) / Tc]
 
     IS[Stored integrator state I_state] --> SUM
     KP --> SUM
