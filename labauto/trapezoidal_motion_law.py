@@ -58,10 +58,10 @@ class TrapezoidalMotionLaw(MotionLaw):
         if np.max(distance) < self.tolerance:
             self.t_acc = self.t_cruise_vel = self.t_dec = self.total_time = 0
             self.acc = self.dec = self.cruise_vel = np.zeros(self.ndof)
-            self.y_ini = self.target_y
+            self.y_ini = self.target_y.copy()
             return
         
-        self.y_ini = self.y
+        self.y_ini = self.y.copy()
         direction = np.sign(self.target_y - self.y)
         
         t_acc_joints = self.max_Dy / self.max_DDy
