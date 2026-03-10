@@ -319,15 +319,4 @@ mjpython your_script.py
 - If you need ROS and this package on the same machine, use separate terminal sessions.
 - If you encounter environment-related issues, open a new terminal, avoid sourcing ROS, activate the Conda environment again, and retry.
 
-## Usage in MATLAB
 
-Run the `configure_python` script at MATLAB startup.
-
-Before configuring MATLAB, you can verify the Python interpreter path from the active Conda environment with:
-
-```bash
-where python   # Windows
-which python   # Linux / macOS
-```
-
-On macOS, keep in mind that MuJoCo-based scripts should be launched with `mjpython`.
