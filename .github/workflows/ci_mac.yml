@@ -1,10 +1,10 @@
-name: CI Ubuntu Python 3.11
+name: CI macOS Python 3.11
 
 on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     defaults:
       run:

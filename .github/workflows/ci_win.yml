@@ -1,14 +1,14 @@
-name: CI Ubuntu Python 3.11
+name: CI Windows Python 3.11
 
 on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     defaults:
       run:
-        shell: bash -el {0}
+        shell: pwsh
 
     steps:
       - name: Checkout Code
