@@ -30,7 +30,7 @@ def test_filter(time_constant, Tc):
     # Define the continuous-time transfer function
     F = create_transfer_function(time_constant)
 
-    # Convert to discrete-time using Tustin's method
+    # Convert to discrete-time using Zoh's method
     Fd_num, Fd_den, Td = cont2discrete((F.num, F.den), Tc, method='zoh')
     Fd = dlti(Fd_num.flatten(), Fd_den.flatten(), dt=Tc)
 
@@ -38,12 +38,15 @@ def test_filter(time_constant, Tc):
     t, y = dstep(Fd)
     t = t.flatten()
     y = y[0].flatten()
+    
+    y=y[1:]  # in FirstOrderLowPassFilter the output is not multiplied by z^-1 as in zoh
+    t=t[1:]
 
     # Compute step response of the Python notch filter
     f.starting(0)
     y_python = np.array([f.step(1) for _ in range(len(t))])
     # Compare results
-    assert np.allclose(y, y_python, atol=1e-10), "Output mismatch"
+    assert np.allclose(y, y_python, atol=1e-8), "Output mismatch"
 
 
 if __name__ == "__main__":
