@@ -4,7 +4,9 @@ This repository contains a collection of MATLAB and Python tools used for the _L
 
 ## Build Status
 
-![CI Test](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg?branch=master)
+![CI Test Ubuntu  Python 3.11](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci.yml/badge.svg?branch=master)
+![CI Test Windows Python 3.11](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci_win.yml/badge.svg?branch=master)
+![CI Test MacOs   Python 3.11](https://github.com/JRL-CARI-CNR-UNIBS/labauto_control_library/actions/workflows/ci_mac.yml/badge.svg?branch=master)
 
 ## Table of Contents
 - [Overview](#overview)
