@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `BaseFilter` class is an abstract base class designed for implementing Single-Input-Single-Output digital filters. It defines a common interface that must be followed by all derived filter classes, ensuring a consistent structure and behavior.
+The `BaseFilter` class is an [abstract base class](https://dev.to/dollardhingra/understanding-the-abstract-base-class-in-python-k7h) designed for implementing Single-Input-Single-Output digital filters. It defines a common interface that must be followed by all derived filter classes, ensuring a consistent structure and behavior.
 
 
 ## Methods
