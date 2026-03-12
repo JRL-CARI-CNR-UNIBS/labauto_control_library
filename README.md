@@ -115,35 +115,37 @@ For each joint, `CascadeController` uses:
 ```mermaid
 flowchart LR
   subgraph J["CascadeController (one joint)"]
-    r_out["Outer reference"] --> e_out["Outer error"]
-    y_out["Outer measure"] --> e_out
-
+    r_out["Outer reference q"] --> e_out["Outer error"]
+    
     e_out --> Fes["filters_on_error_signal"]
-    y_out --> Fm["filters_on_measure"]
+    y_out["Outer measure q"] --> Fm["filters_on_measure"]
     e_out --> Fde["filters_on_derivative_error"]
 
-    Fes --> PIDo["Outer PID (Kp Ki Kd)"]
-    Fm  --> PIDo
-    Fde --> PIDo
+    Fes --> PIo["Outer PI (Kp Ki)"]
+    Fm  --> e_out
+    Fde --> Do["Outer D (Kd)"]
 
-    PIDo --> r_in["Inner reference"]
+    PIo --> sum1["+"]
+    Do --> sum1["+"]
+    r_in["Inner reference qp"] --> sum1
 
-    r_in --> e_in["Inner error"]
-    y_in["Inner measure"] --> e_in
-
+    sum1 --> e_in["Inner error"]
+    
     e_in --> Fes2["filters_on_error_signal"]
-    y_in --> Fm2["filters_on_measure"]
+    y_in["Inner measure qp"] --> Fm2["filters_on_measure"]
     e_in --> Fde2["filters_on_derivative_error"]
 
-    Fes2 --> PIDi["Inner PID (Kp Ki Kd)"]
-    Fm2  --> PIDi
-    Fde2 --> PIDi
+    Fes2 --> PIi["Inner PI (Kp Ki)"]
+    Fm2  --> e_in
+    Fde2 --> Di["Inner D (Kd)"]
 
-    PIDi --> u_fb["Feedback output"]
+    PIi --> sum2
+    ext_ffw["External feedforward"] --> sum2["+"]
+    Di --> sum2
   end
 
   u_ff["Feedforward tau_ff = Phi * params"] --> sum["Sum"]
-  u_fb --> sum
+  sum2 --> sum["+"]
   sum --> u_cmd["Command"]
 ```
 
