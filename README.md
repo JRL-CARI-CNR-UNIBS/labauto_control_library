@@ -71,8 +71,9 @@ The controller computes a feedforward action (precomputed torque) using a rigid 
 flowchart LR
   subgraph DCSIN["SIGNALS"]
     direction TB
-    QREF["q_ref (position refs)"]
-    QFB["q, dq feedback (all joints)"]
+    QREF["q, dq, ddq reference"]
+    QFB["q, dq feedback"]
+    EXT_FFW["External feedforward"]
   end
 
   subgraph FFW["FEEDFORWARD"]
@@ -95,6 +96,20 @@ flowchart LR
   QREF --> CN
   QFB --> CN
 
+  linkStyle 1 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 2 stroke:#d62728,stroke-width:3px;
+  linkStyle 3 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 4 stroke:#d62728,stroke-width:3px;
+  linkStyle 5 stroke:#1f77b4,stroke-width:3px;
+  linkStyle 6 stroke:#d62728,stroke-width:3px;
+
+  EXT_FFW  --> C1
+  EXT_FFW  --> C2
+  EXT_FFW  --> CN
+  linkStyle 7 stroke:#00f000,stroke-width:3px;
+  linkStyle 8 stroke:#00f000,stroke-width:3px;
+  linkStyle 9 stroke:#00f000,stroke-width:3px;
+
   DCIN --> TAU_FB["tau_fb"]
 
   QREF --> TAU_FF
@@ -102,13 +117,7 @@ flowchart LR
   TAU_FF --> SUM["tau_cmd = tau_ff + tau_fb"]
   TAU_FB --> SUM
 
-  linkStyle 1 stroke:#1f77b4,stroke-width:3px;
-  linkStyle 2 stroke:#d62728,stroke-width:3px;
-  linkStyle 3 stroke:#1f77b4,stroke-width:3px;
-  linkStyle 4 stroke:#d62728,stroke-width:3px;
-  linkStyle 5 stroke:#1f77b4,stroke-width:3px;
-  linkStyle 6 stroke:#d62728,stroke-width:3px;
-  linkStyle 8 stroke:#1f77b4,stroke-width:3px;
+
 ```
 
 For each joint, `CascadeController` uses:
@@ -131,12 +140,12 @@ flowchart LR
 
     PIo --> sum1["+"]
     Do --> sum1["+"]
-    r_in["Inner reference qp"] --> sum1
+    r_in["Inner reference dq"] --> sum1
 
     sum1 --> e_in["Inner error"]
     
     e_in --> Fes2["filters_on_error_signal"]
-    y_in["Inner measure qp"] --> Fm2["filters_on_measure"]
+    y_in["Inner measure dq"] --> Fm2["filters_on_measure"]
     e_in --> Fde2["filters_on_derivative_error"]
 
     Fes2 --> PIi["Inner PI (Kp Ki)"]
