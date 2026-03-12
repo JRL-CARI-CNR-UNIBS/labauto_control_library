@@ -35,12 +35,16 @@ This repository contains a collection of MATLAB and Python tools used for the _L
 - **FIRFilter:** [Discrete-time Finite Impulse Response (FIR) filter for smoothing signals](docs/fir_filter.md).
 - **Delay:** [Discrete-time fixed delay](docs/delay.md).
 
+Follow [these instructions](docs/implementing_a_new_filter.md) To implement a new filter.
+
 ### Controller Classes
 
 - **BaseController:** [Abstract class for designing control laws in mechatronic systems](docs/base_controller.md).
 - **PIDController:** [Proportional-Integral-Derivative controller with customizable gains and filtering options](docs/pid_controller.md).
 - **CascadeController:** [Cascade control structure combining inner and outer controllers for improved performance](docs/cascade_controller.md).
 - **DecentralizedController:** [Decentralized control structure with precomputed torque](docs/decentralized_controller.md).
+
+Follow [these instructions](docs/implementing_a_new_controller.md) To implement a new controller.
 
 ### Motion Law
 
