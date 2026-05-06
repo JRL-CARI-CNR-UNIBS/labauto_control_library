@@ -4,7 +4,8 @@ To create a filter from the `BaseFilter` abstract base class (ABC), you need to 
 
 ```python
 from abc import ABC, abstractmethod
-
+from labauto import BaseFilter
+# from labauto import AnotherFilter
 class DummyFilter(BaseFilter):
     """
     DummyFilter - Concrete implementation of BaseFilter.
