@@ -30,7 +30,7 @@ Computes one step of the filter and returns the filtered output.
 
 ## Example Usage
 ```python
-from first_order_lp_filter import FirstOrderLowPassFilter
+from labauto import FirstOrderLowPassFilter
 
 # Create a low-pass filter with sampling time 0.01s and time constant 0.1s
 filter = FirstOrderLowPassFilter(Tc=0.01, time_constant=0.1)
