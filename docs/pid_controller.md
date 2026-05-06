@@ -53,7 +53,7 @@ Computes the control action based on the error, setpoint, and feedforward input.
 
 ## Example Usage
 ```python
-from pid_controller import PIDController
+from labauto import PIDController
 
 # Create a PID controller with specific gains
 controller = PIDController(Tc=0.01, Kp=1.2, Ki=0.5, Kd=0.3)
