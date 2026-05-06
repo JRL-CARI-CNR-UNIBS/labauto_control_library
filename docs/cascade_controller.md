@@ -29,8 +29,8 @@ Computes the control action based on the reference, system state, and feedforwar
 
 ## Example Usage
 ```python
-from cascade_controller import CascadeController
-from pid_controller import PIDController
+from labauto import CascadeController
+from labauto import PIDController
 
 # Create inner and outer PID controllers
 inner_ctrl = PIDController(Tc=0.01, Kp=1.5, Ki=0.2, Kd=0.1)
