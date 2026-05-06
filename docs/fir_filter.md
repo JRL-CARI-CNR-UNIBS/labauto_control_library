@@ -25,7 +25,7 @@ Processes the input signal and returns the filtered output.
 ## Example Usage
 ```python
 import numpy as np
-from fir_filter import FIRFilter
+from labauto import FIRFilter
 
 # Define filter coefficients
 fir_coefficients = np.array([0.2, 0.5, 0.3])
