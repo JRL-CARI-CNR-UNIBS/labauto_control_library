@@ -28,7 +28,7 @@ Derived classes must implement the following methods:
 To create a custom filter, inherit from `BaseFilter` and implement the abstract methods:
 
 ```python
-from base_filter import BaseFilter
+from labauto import BaseFilter
 
 class CustomFilter(BaseFilter):
     def initialize(self):
