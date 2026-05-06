@@ -34,7 +34,7 @@ Processes an input sample and returns the filtered output.
 
 ## Example Usage
 ```python
-from notch_filter import NotchFilter
+from labauto import NotchFilter
 
 # Define filter parameters
 Tc = 0.001  # Sampling time (1ms)
