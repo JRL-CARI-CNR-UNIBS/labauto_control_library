@@ -12,7 +12,7 @@ The **Digital Delay Filter** is a discrete-time filter that introduces a specifi
 ## Usage
 ### **Example Usage**
 ```python
-from delay_filter import Delay
+from labauto import Delay
 
 # Create a delay filter with 10ms sampling time and 50ms delay
 delay = Delay(Tc=0.01, L=0.05)
